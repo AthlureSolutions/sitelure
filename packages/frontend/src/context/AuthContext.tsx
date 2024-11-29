@@ -1,6 +1,6 @@
 // packages/frontend/src/context/AuthContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import api from '../api'; // Axios instance
 
 interface AuthContextType {
   user: string | null;
@@ -16,27 +16,40 @@ export const AuthContext = createContext<AuthContextType>({
   logout: () => {},
 });
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) setUser(token);
+    if (token) {
+      setUser(token);
+      // Optionally, decode the token to get user info
+    }
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/auth/login', { email, password });
-    localStorage.setItem('token', response.data.token);
-    setUser(response.data.token);
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      setUser(response.data.token);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const register = async (email: string, password: string) => {
-    await axios.post('/api/auth/register', { email, password });
+    try {
+      const response = await api.post('/auth/register', { email, password });
+      // Optionally, handle post-registration actions
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    // Optionally, additional logout actions
   };
 
   return (

@@ -1,27 +1,25 @@
 {
   "name": "sitelure",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --parallel",
     "build": "turbo run build",
-    "start": "turbo run start",
     "lint": "turbo run lint",
-    "format": "turbo run format"
+    "test": "turbo run test"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Brian Warren for Athlure Saas",
   "license": "ISC",
-  "description": "",
+  "description": "A easy to use AI website builder",
   "devDependencies": {
     "turbo": "^2.3.3"
   },
-  "dependencies": {
-    "@headlessui/react": "^2.2.0",
-    "axios": "^1.7.8",
-    "react-router-dom": "^7.0.1"
-  },
-    "workspaces": [
+  "workspaces": [
     "packages/*"
-  ]
+  ],
+  "packageManager": "npm@10.8.1",
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "framer-motion": "^11.12.0"
+  }
 }

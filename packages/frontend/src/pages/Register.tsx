@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo_black.png';
 
 const Register: React.FC = () => {
   const { register } = useContext(AuthContext);

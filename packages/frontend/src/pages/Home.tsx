@@ -1,23 +1,18 @@
 // packages/frontend/src/pages/Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
 
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white relative overflow-hidden">
-      {/* Logo */}
-      <div className="absolute top-8 left-8 z-20">
-        <Link to="/">
-          <img src={logo} alt="Logo" className="h-12 w-auto" />
-        </Link>
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background gradient that stays under navbar */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white -z-10"></div>
 
       {/* Hero Section - Full Screen */}
       <section className="h-screen relative overflow-hidden flex items-center justify-center">
         {/* Enhanced Abstract Background Design */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden -z-10">
           <div className="absolute -left-1/4 -top-1/4 w-[800px] h-[800px] bg-blue-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
           <div className="absolute right-1/4 top-1/3 w-[600px] h-[600px] bg-purple-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
           <div className="absolute -bottom-1/4 left-1/3 w-[700px] h-[700px] bg-pink-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-2000"></div>
