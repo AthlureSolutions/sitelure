@@ -1,0 +1,17 @@
+// packages/backend/tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,               // Ensure this is true
+    "allowSyntheticDefaultImports": true,  // Ensure this is true
+    "moduleResolution": "node",            // Ensure module resolution is set to 'node'
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

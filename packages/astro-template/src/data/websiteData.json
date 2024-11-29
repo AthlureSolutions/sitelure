@@ -1,0 +1,12 @@
+{
+    "businessName": "Default Business",
+    "description": "This is a default description. It will be replaced with the actual business description.",
+    "aboutDescription": "This is the about section. Provide detailed information about your business here.",
+    "logoUrl": "/assets/images/default-logo.png",
+    "colors": {
+      "primary": "#1E3A8A",
+      "secondary": "#9333EA"
+    },
+    "template": "modern-business"
+  }
+  

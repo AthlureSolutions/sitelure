@@ -1,0 +1,27 @@
+{
+  "name": "sitelure",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "format": "turbo run format"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "axios": "^1.7.8",
+    "react-router-dom": "^7.0.1"
+  },
+    "workspaces": [
+    "packages/*"
+  ]
+}

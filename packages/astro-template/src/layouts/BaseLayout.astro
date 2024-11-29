@@ -1,0 +1,22 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import websiteData from '../data/websiteData.json';
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{websiteData.businessName} | Home</title>
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Additional SEO meta tags -->
+  </head>
+  <body class={`bg-white text-gray-800`} style={`--primary-color: ${websiteData.colors.primary}; --secondary-color: ${websiteData.colors.secondary};`}>
+    <Header />
+    <main class="min-h-screen p-6">
+      {Astro.props.children}
+    </main>
+    <Footer />
+  </body>
+</html>
