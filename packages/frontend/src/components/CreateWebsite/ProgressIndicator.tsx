@@ -7,39 +7,49 @@ interface Props {
 }
 
 const ProgressIndicator: React.FC<Props> = ({ currentStep, totalSteps }) => {
+  const steps = [
+    'Business Info',
+    'Contact',
+    'Logo & Colors',
+    'Social & Template',
+    'Review'
+  ];
+
   return (
-    <nav aria-label="Progress" className="mt-8 mb-24 w-full">
-      <h2 className="text-2xl font-bold text-center mb-8">Step {currentStep} of {totalSteps}</h2>
-      <ol className="flex items-center justify-center max-w-4xl mx-auto px-4">
-        {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
-          <li key={step} className={`${step === totalSteps ? '' : 'flex-1'}`}>
-            <div className="flex items-center">
+    <div className="w-full">
+      {/* Progress Bar */}
+      <div className="relative mb-8">
+        <div className="h-2 bg-[#2A2A2A] rounded-full">
+          <div
+            className="h-full bg-[#00D8FF] rounded-full transition-all duration-300"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
+        <div className="absolute top-0 left-0 w-full flex justify-between transform -translate-y-full mb-2">
+          {steps.map((step, index) => (
+            <div
+              key={index}
+              className={`flex flex-col items-center ${
+                index + 1 <= currentStep ? 'text-[#00D8FF]' : 'text-gray-500'
+              }`}
+            >
               <div
-                className={`w-14 h-14 flex items-center justify-center rounded-full border-3 font-bold text-lg ${
-                  step === currentStep
-                    ? 'bg-blue-600 border-blue-600 text-white'
-                    : step < currentStep
-                    ? 'bg-green-500 border-green-500 text-white'
-                    : 'bg-white border-gray-300 text-gray-700'
+                className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 transition-all duration-300 ${
+                  index + 1 === currentStep
+                    ? 'bg-[#00D8FF] text-black'
+                    : index + 1 < currentStep
+                    ? 'bg-[#00D8FF] text-black'
+                    : 'bg-[#2A2A2A] text-gray-500'
                 }`}
-                aria-current={step === currentStep ? 'step' : undefined}
               >
-                {step}
+                {index + 1}
               </div>
-              {step !== totalSteps && (
-                <div
-                  className={`flex-1 h-2 ${
-                    step < currentStep ? 'bg-green-500' : 'bg-gray-300'
-                  }`}
-                  aria-hidden="true"
-                ></div>
-              )}
+              <span className="text-sm whitespace-nowrap">{step}</span>
             </div>
-            <span className="sr-only">Step {step}</span>
-          </li>
-        ))}
-      </ol>
-    </nav>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

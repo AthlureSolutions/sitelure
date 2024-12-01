@@ -1,91 +1,120 @@
 // packages/frontend/src/components/CreateWebsite/BusinessInfoForm.tsx
-import React, { useState, useContext } from 'react';
-import { WebsiteContext } from '../../context/WebsiteContext';
 
-interface Props {
+import React, { useContext, useState } from 'react';
+import { WebsiteContext } from '../../context/WebsiteContext';
+import { isEmail } from 'validator'; // Ensure to install: npm install validator
+
+interface BusinessInfoFormProps {
   nextStep: () => void;
 }
 
-const BusinessInfoForm: React.FC<Props> = ({ nextStep }) => {
-  const { businessInfo, setBusinessInfo } = useContext(WebsiteContext);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setBusinessInfo({ ...businessInfo, [e.target.name]: e.target.value });
-  };
-
-  const validate = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!businessInfo.name) newErrors.name = 'Business name is required';
-    if (!businessInfo.industry) newErrors.industry = 'Industry is required';
-    if (!businessInfo.description) newErrors.description = 'Description is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+const BusinessInfoForm: React.FC<BusinessInfoFormProps> = ({ nextStep }) => {
+  const { websiteData, setBusinessInfo } = useContext(WebsiteContext);
+  const [businessName, setBusinessName] = useState<string>(websiteData.businessInfo.businessName);
+  const [businessEmail, setBusinessEmail] = useState<string>(websiteData.businessInfo.businessEmail);
+  const [businessDescription, setBusinessDescription] = useState<string>(
+    websiteData.businessInfo.businessDescription
+  );
+  const [error, setError] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) nextStep();
+    setError('');
+
+    // Basic validation
+    if (!businessName.trim() || !businessEmail.trim() || !businessDescription.trim()) {
+      setError('All fields are required.');
+      return;
+    }
+
+    if (!isEmail(businessEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    // Update context
+    setBusinessInfo({
+      businessName,
+      businessEmail,
+      businessDescription,
+    });
+
+    // Proceed to next step
+    nextStep();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Business Information</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-white">Business Information</h2>
+      
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-500 text-center">
+          {error}
+        </div>
+      )}
 
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-gray-700">Business Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={businessInfo.name}
-          onChange={handleChange}
-          className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-          aria-invalid={errors.name ? 'true' : 'false'}
-          aria-describedby="name-error"
-        />
-        {errors.name && <p id="name-error" className="text-red-500 text-sm mt-1">{errors.name}</p>}
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="businessName" className="block text-gray-300 mb-2 font-medium">
+            Business Name
+          </label>
+          <input
+            type="text"
+            id="businessName"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                     text-white placeholder-gray-400 
+                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                     transition-all duration-200"
+            placeholder="Enter your business name"
+          />
+        </div>
 
-      <div className="mb-4">
-        <label htmlFor="industry" className="block text-gray-700">Industry</label>
-        <input
-          type="text"
-          id="industry"
-          name="industry"
-          value={businessInfo.industry}
-          onChange={handleChange}
-          className={`mt-1 block w-full border ${errors.industry ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-          aria-invalid={errors.industry ? 'true' : 'false'}
-          aria-describedby="industry-error"
-        />
-        {errors.industry && <p id="industry-error" className="text-red-500 text-sm mt-1">{errors.industry}</p>}
-      </div>
+        <div>
+          <label htmlFor="businessEmail" className="block text-gray-300 mb-2 font-medium">
+            Business Email
+          </label>
+          <input
+            type="email"
+            id="businessEmail"
+            value={businessEmail}
+            onChange={(e) => setBusinessEmail(e.target.value)}
+            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                     text-white placeholder-gray-400 
+                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                     transition-all duration-200"
+            placeholder="contact@yourbusiness.com"
+          />
+        </div>
 
-      <div className="mb-6">
-        <label htmlFor="description" className="block text-gray-700">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          value={businessInfo.description}
-          onChange={handleChange}
-          className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-          rows={4}
-          aria-invalid={errors.description ? 'true' : 'false'}
-          aria-describedby="description-error"
-        ></textarea>
-        {errors.description && <p id="description-error" className="text-red-500 text-sm mt-1">{errors.description}</p>}
-      </div>
+        <div>
+          <label htmlFor="businessDescription" className="block text-gray-300 mb-2 font-medium">
+            Business Description
+          </label>
+          <textarea
+            id="businessDescription"
+            value={businessDescription}
+            onChange={(e) => setBusinessDescription(e.target.value)}
+            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                     text-white placeholder-gray-400 
+                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                     transition-all duration-200
+                     h-32 resize-none"
+            placeholder="Tell us what your business does..."
+          />
+        </div>
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Next
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-end pt-4">
+          <button
+            type="submit"
+            className="btn-modern px-8 py-2"
+          >
+            Next Step
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

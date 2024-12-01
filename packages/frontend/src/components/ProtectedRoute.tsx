@@ -1,6 +1,6 @@
 // packages/frontend/src/components/ProtectedRoute.tsx
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 interface ProtectedRouteProps {
@@ -9,9 +9,28 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if we have a token in localStorage
+    const token = localStorage.getItem('token');
+    if (!token && !user) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#1E1E1E]">
+      <div className="text-white">Loading...</div>
+    </div>;
+  }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    // Save the attempted location
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return children;
