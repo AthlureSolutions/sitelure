@@ -356,37 +356,43 @@ export const deleteWebsiteHandler = async (req: Request, res: Response): Promise
     }
 
     // Delete from Netlify if deployUrl exists
-    if (website.deployUrl && process.env.NETLIFY_API_TOKEN) {
+    if (website.deployUrl) {
       try {
-        // Extract site name from deploy URL (format: https://site-name.netlify.app)
-        const siteName = website.deployUrl
-          .replace('https://', '')
-          .replace('.netlify.app', '');
-
-        console.log('Attempting to delete Netlify site:', siteName);
+        // Extract deploy ID from the URL
+        // Example URL: http://674df83c7778d40096d13de5--test-gym-yeah-sitelure-407723bb
+        const deployUrl = website.deployUrl;
+        const deployId = deployUrl.split('//')[1].split('--')[0];
         
-        // Get site ID using the sites API
+        console.log('Fetching Netlify site details for deploy ID:', deployId);
+        
+        // First, get all sites
         const sitesResponse = await axios.get('https://api.netlify.com/api/v1/sites', {
           headers: {
-            Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
-          },
+            'Authorization': `Bearer ${process.env.NETLIFY_API_TOKEN}`
+          }
         });
 
-        const site = sitesResponse.data.find((s: any) => s.name === siteName);
-        
+        // Find the site with matching deploy ID
+        const site = sitesResponse.data.find((s: any) => 
+          s.deploy_id === deployId || 
+          s.id === deployId || 
+          s.site_id === deployId
+        );
+
         if (site) {
-          // Delete site from Netlify
+          console.log('Found Netlify site:', site.name, 'with ID:', site.id);
           await axios.delete(`https://api.netlify.com/api/v1/sites/${site.id}`, {
             headers: {
-              Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
-            },
+              'Authorization': `Bearer ${process.env.NETLIFY_API_TOKEN}`
+            }
           });
-          console.log('Successfully deleted Netlify site:', siteName);
+          console.log('Successfully deleted Netlify site');
         } else {
-          console.log('Netlify site not found:', siteName);
+          console.log('No matching Netlify site found for deploy ID:', deployId);
         }
-      } catch (netlifyError: any) {
-        console.error('Error deleting from Netlify:', netlifyError.message);
+      } catch (error: any) {
+        console.error('Error deleting Netlify site:', error.response?.data || error.message);
+        // Continue with website deletion even if Netlify deletion fails
       }
     }
 
