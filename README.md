@@ -7,7 +7,7 @@ A modern website builder that allows users to create and deploy professional web
 - Node.js (v16 or higher)
 - PostgreSQL
 - Netlify account (for deployments)
-- pnpm (for package management)
+- npm (for package management)
 
 ## Environment Setup
 
@@ -21,7 +21,7 @@ cd sitelure
 2. Install dependencies:
 
 ```bash
-pnpm install
+npm install
 ```
 
 3. Set up environment variables:
@@ -42,8 +42,8 @@ Update the `.env` file with your own values:
 
 ```bash
 cd packages/backend
-pnpm prisma generate
-pnpm prisma migrate dev
+npm prisma generate
+npm prisma migrate dev
 ```
 
 ## Security Notes
@@ -60,7 +60,7 @@ pnpm prisma migrate dev
 
 ```bash
 # From the root directory
-pnpm dev
+npm dev
 ```
 
 This will start:
@@ -119,7 +119,7 @@ git push origin feature/your-feature-name
 
 2. **Build Errors**
    - Clear turbo cache: `rm -rf .turbo`
-   - Reinstall dependencies: `pnpm install`
+   - Reinstall dependencies: `npm install`
 
 3. **Deployment Issues**
    - Verify your Netlify token has correct permissions
