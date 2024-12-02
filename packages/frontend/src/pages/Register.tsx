@@ -1,131 +1,163 @@
 // packages/frontend/src/pages/Register.tsx
-import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { HiMail, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
 
-const Register: React.FC = () => {
-  const { register, user } = useContext(AuthContext);
+const Register = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    // If user is logged in, redirect to dashboard
-    if (user) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
-    }
-  }, [user, navigate, location]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (error) setError('');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    setError('');
 
-    if (formData.password !== formData.confirmPassword) {
+    // Validate password match
+    if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    setLoading(true);
+    // Validate password strength
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
     try {
-      await register(formData.email, formData.password);
-      // Navigation will be handled by useEffect after user is set
+      setIsLoading(true);
+      await register(email, password);
+      navigate('/dashboard');
     } catch (err: any) {
-      console.error('Registration error:', err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || 'Failed to register');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4">
-      <div className="max-w-md w-full glass p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">Create Your Account</h2>
-        
-        {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col justify-center">
+      <div className="max-w-md w-full mx-auto p-6">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-[var(--text-primary)]">Create Account</h1>
+          <p className="text-[var(--text-secondary)] mt-2">
+            Join SiteLure and start building your website today
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" noValidate>
-          <div>
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="off"
-              className="form-input"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              aria-required="true"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              autoComplete="off"
-              className="form-input"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              aria-required="true"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full btn-modern ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating account...
-              </span>
-            ) : (
-              'Create Account'
+        <div className="glass rounded-lg p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded-lg text-sm">
+                {error}
+              </div>
             )}
-          </button>
-        </form>
 
-        <p className="mt-6 text-center text-[var(--text-secondary)]">
-          Already have an account?{' '}
-          <Link to="/login" className="text-[#00D8FF] hover:text-[#FF3366] font-medium transition-colors duration-200">
-            Login here
-          </Link>
-        </p>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HiMail className="h-5 w-5 text-[var(--text-tertiary)]" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="block w-full pl-10 pr-3 py-2 border border-[var(--border-primary)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HiLockClosed className="h-5 w-5 text-[var(--text-tertiary)]" />
+                </div>
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="block w-full pl-10 pr-10 py-2 border border-[var(--border-primary)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <HiEyeOff className="h-5 w-5 text-[var(--text-tertiary)]" />
+                  ) : (
+                    <HiEye className="h-5 w-5 text-[var(--text-tertiary)]" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HiLockClosed className="h-5 w-5 text-[var(--text-tertiary)]" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="block w-full pl-10 pr-10 py-2 border border-[var(--border-primary)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <HiEyeOff className="h-5 w-5 text-[var(--text-tertiary)]" />
+                  ) : (
+                    <HiEye className="h-5 w-5 text-[var(--text-tertiary)]" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full btn-modern flex justify-center"
+            >
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-[var(--text-secondary)]">
+            Already have an account?{' '}
+            <Link to="/login" className="text-[#00D8FF] hover:underline">
+              Sign in
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 // packages/frontend/src/pages/Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { HiArrowRight } from 'react-icons/hi';
 
 
 const Home: React.FC = () => {
@@ -35,10 +36,9 @@ const Home: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/register"
-              className="btn-modern group flex items-center justify-center text-white"
+              className="btn-modern flex items-center gap-2 text-lg"
             >
-              Get Started
-              <span className="absolute right-4 group-hover:translate-x-1 transition-transform">→</span>
+              Get Started <HiArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/login"
