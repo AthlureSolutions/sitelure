@@ -1,57 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HiPlus, HiGlobe, HiTemplate, HiExternalLink, HiTrash } from 'react-icons/hi';
+import { HiPlus, HiGlobe, HiTemplate, HiExternalLink, HiTrash, HiX } from 'react-icons/hi';
 import api from '../api';
 
 interface Website {
   id: string;
-  ownerId: string;
-  
-  // Business Information
   businessName: string;
   businessEmail: string;
   businessDescription: string;
-  
-  // Contact Information
   contactEmail: string;
-  phoneNumber: string;
-  address: string;
-
-  // Design
-  logoUrl: string | null;
+  phoneNumber?: string;
+  address?: string;
+  logoUrl?: string;
   primaryColor: string;
   secondaryColor: string;
   template: string;
-
-  // Social Media Links
-  facebookUrl: string | null;
-  twitterUrl: string | null;
-  instagramUrl: string | null;
-  linkedinUrl: string | null;
-
-  // SEO Settings
-  metaTitle: string;
-  metaDescription: string;
-  metaKeywords: string;
-
-  // Deployment
-  deployUrl: string | undefined;
-  content: string;
-
-  // Timestamps
+  facebookUrl?: string;
+  twitterUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  deployUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [websites, setWebsites] = useState<Website[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [selectedWebsite, setSelectedWebsite] = useState<Website | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchWebsites();
@@ -61,46 +45,13 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       setError('');
-      console.log('Fetching websites...');
       const response = await api.get('/websites');
-      console.log('Websites response:', response.data);
       setWebsites(response.data);
     } catch (err: any) {
-      console.error('Error fetching websites:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        config: err.config
-      });
-      if (err.message === 'Network Error') {
-        setError('Unable to connect to the server. Please make sure the backend is running.');
-      } else {
-        setError(err.response?.data?.message || 'Failed to fetch websites. Please try again.');
-      }
+      console.error('Error fetching websites:', err);
+      setError(err.response?.data?.message || 'Failed to fetch websites');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleWebsiteClick = async (websiteId: string) => {
-    try {
-      setError('');
-      console.log('Fetching website details for:', websiteId);
-      const response = await api.get(`/websites/${websiteId}`);
-      console.log('Website details response:', response.data);
-      setSelectedWebsite(response.data);
-    } catch (err: any) {
-      console.error('Error fetching website details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        config: err.config
-      });
-      if (err.message === 'Network Error') {
-        setError('Unable to connect to the server. Please make sure the backend is running.');
-      } else {
-        setError(err.response?.data?.message || 'Failed to fetch website details. Please try again.');
-      }
     }
   };
 
@@ -112,12 +63,12 @@ const Dashboard: React.FC = () => {
       await api.delete(`/websites/${selectedWebsite.id}`);
       setWebsites(websites.filter(site => site.id !== selectedWebsite.id));
       setSelectedWebsite(null);
-      setDeleteConfirm(false);
-      setError('');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error deleting website');
+      console.error('Error deleting website:', err);
+      setError(err.response?.data?.message || 'Failed to delete website');
     } finally {
       setIsDeleting(false);
+      setDeleteConfirm(false);
     }
   };
 
@@ -125,9 +76,15 @@ const Dashboard: React.FC = () => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
+
+  if (loading) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
@@ -152,7 +109,7 @@ const Dashboard: React.FC = () => {
         )}
 
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Websites</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">My Websites</h1>
           <button
             onClick={() => navigate('/create-website')}
             className="btn-modern flex items-center gap-2"
@@ -162,39 +119,45 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {loading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : error ? (
+        {error ? (
           <div className="text-red-500 text-center py-8">{error}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {websites.length > 0 ? (
               websites.map((website) => (
-                <div 
-                  key={website.id} 
-                  onClick={() => handleWebsiteClick(website.id)}
+                <div
+                  key={website.id}
+                  onClick={() => setSelectedWebsite(website)}
                   className="glass cursor-pointer transform hover:scale-[1.02] transition-all duration-300 rounded-lg p-6 border border-[var(--border-primary)] hover:border-[#00D8FF]"
                 >
                   <div className="flex items-center justify-center h-32 mb-4">
-                    <HiGlobe className="w-16 h-16 text-[#00D8FF]" />
+                    {website.logoUrl ? (
+                      <img
+                        src={website.logoUrl}
+                        alt={`${website.businessName} logo`}
+                        className="h-full object-contain"
+                      />
+                    ) : (
+                      <HiGlobe className="w-16 h-16 text-[#00D8FF]" />
+                    )}
                   </div>
                   <h3 className="text-xl font-semibold text-center mb-2 text-[var(--text-primary)]">{website.businessName}</h3>
-                  <p className="text-[var(--text-secondary)] text-center mb-4">{website.businessDescription}</p>
-                  <div className="flex justify-center gap-4">
-                    {website.deployUrl && (
-                      <a 
-                        href={website.deployUrl} 
-                        target="_blank" 
+                  <p className="text-[var(--text-secondary)] text-center mb-4 line-clamp-2">{website.businessDescription}</p>
+                  {website.deployUrl && (
+                    <div className="flex justify-center">
+                      <a
+                        href={website.deployUrl}
+                        target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="btn-modern-sm flex items-center gap-2"
                       >
                         View Live <HiExternalLink className="w-4 h-4" />
                       </a>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   <div className="mt-4 text-center text-sm text-[var(--text-tertiary)]">
-                    Created on {formatDate(website.createdAt)}
+                    Created {formatDate(website.createdAt)}
                   </div>
                 </div>
               ))
@@ -220,11 +183,17 @@ const Dashboard: React.FC = () => {
             )}
           </div>
         )}
-        
+
         {/* Website Details Modal */}
         {selectedWebsite && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="glass rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]"
+            onClick={() => setSelectedWebsite(null)}
+          >
+            <div 
+              className="bg-[var(--bg-primary)] rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl border border-[var(--border-primary)]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex justify-between items-start mb-6">
                 <h2 className="text-2xl font-bold text-[var(--text-primary)]">{selectedWebsite.businessName}</h2>
                 <div className="flex gap-2">
@@ -254,9 +223,130 @@ const Dashboard: React.FC = () => {
                       </button>
                     </div>
                   )}
+                  <button
+                    onClick={() => setSelectedWebsite(null)}
+                    className="btn-modern-sm"
+                  >
+                    <HiX className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-              {/* Add more website details here */}
+
+              <div className="space-y-6">
+                {/* Business Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Business Information</h3>
+                  <div className="space-y-2 text-[var(--text-secondary)]">
+                    <p>Name: {selectedWebsite.businessName}</p>
+                    <p>Email: {selectedWebsite.businessEmail}</p>
+                    <p>Description: {selectedWebsite.businessDescription}</p>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Contact Information</h3>
+                  <div className="space-y-2 text-[var(--text-secondary)]">
+                    <p>Email: {selectedWebsite.contactEmail}</p>
+                    <p>Phone: {selectedWebsite.phoneNumber || 'Not provided'}</p>
+                    <p>Address: {selectedWebsite.address || 'Not provided'}</p>
+                  </div>
+                </div>
+
+                {/* Design */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Design</h3>
+                  <div className="space-y-4">
+                    {selectedWebsite.logoUrl && (
+                      <div>
+                        <p className="text-[var(--text-secondary)] mb-2">Logo:</p>
+                        <img 
+                          src={selectedWebsite.logoUrl} 
+                          alt="Logo" 
+                          className="h-20 object-contain bg-[var(--bg-secondary)] rounded-lg p-2"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-[var(--text-secondary)] mb-2">Colors:</p>
+                      <div className="flex gap-4 items-center">
+                        <div>
+                          <p className="text-sm text-[var(--text-tertiary)] mb-1">Primary</p>
+                          <div 
+                            className="w-8 h-8 rounded-full border border-[var(--border-primary)]" 
+                            style={{ backgroundColor: selectedWebsite.primaryColor }}
+                            title={selectedWebsite.primaryColor}
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm text-[var(--text-tertiary)] mb-1">Secondary</p>
+                          <div 
+                            className="w-8 h-8 rounded-full border border-[var(--border-primary)]" 
+                            style={{ backgroundColor: selectedWebsite.secondaryColor }}
+                            title={selectedWebsite.secondaryColor}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-[var(--text-secondary)]">Template: {selectedWebsite.template}</p>
+                  </div>
+                </div>
+
+                {/* Social Media Links */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Social Media</h3>
+                  <div className="space-y-2 text-[var(--text-secondary)]">
+                    {selectedWebsite.facebookUrl && (
+                      <p>Facebook: <a href={selectedWebsite.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
+                    )}
+                    {selectedWebsite.twitterUrl && (
+                      <p>Twitter: <a href={selectedWebsite.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
+                    )}
+                    {selectedWebsite.instagramUrl && (
+                      <p>Instagram: <a href={selectedWebsite.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
+                    )}
+                    {selectedWebsite.linkedinUrl && (
+                      <p>LinkedIn: <a href={selectedWebsite.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
+                    )}
+                    {!selectedWebsite.facebookUrl && !selectedWebsite.twitterUrl && !selectedWebsite.instagramUrl && !selectedWebsite.linkedinUrl && (
+                      <p className="text-[var(--text-tertiary)]">No social media links provided</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* SEO Settings */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">SEO Settings</h3>
+                  <div className="space-y-2 text-[var(--text-secondary)]">
+                    <p>Title: {selectedWebsite.metaTitle || selectedWebsite.businessName}</p>
+                    <p>Description: {selectedWebsite.metaDescription || selectedWebsite.businessDescription}</p>
+                    <p>Keywords: {selectedWebsite.metaKeywords || 'None specified'}</p>
+                  </div>
+                </div>
+
+                {/* Deployment */}
+                <div>
+                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Deployment</h3>
+                  {selectedWebsite.deployUrl ? (
+                    <a 
+                      href={selectedWebsite.deployUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[#00D8FF] hover:underline flex items-center gap-2"
+                    >
+                      View Live Website <HiExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <p className="text-[var(--text-tertiary)]">Website not deployed yet</p>
+                  )}
+                </div>
+
+                {/* Timestamps */}
+                <div className="text-sm text-[var(--text-tertiary)] pt-4 border-t border-[var(--border-primary)]">
+                  <p>Created: {formatDate(selectedWebsite.createdAt)}</p>
+                  <p>Last Updated: {formatDate(selectedWebsite.updatedAt)}</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
