@@ -3,6 +3,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import RedirectIfAuthenticated from './components/RedirectIfAuthenticated';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -22,9 +23,30 @@ const App: React.FC = () => {
         <main className="pt-20 px-4 min-h-screen">
           <Suspense fallback={<div className="text-center mt-20">Loading...</div>}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route 
+                path="/" 
+                element={
+                  <RedirectIfAuthenticated>
+                    <Home />
+                  </RedirectIfAuthenticated>
+                } 
+              />
+              <Route 
+                path="/login" 
+                element={
+                  <RedirectIfAuthenticated>
+                    <Login />
+                  </RedirectIfAuthenticated>
+                } 
+              />
+              <Route 
+                path="/register" 
+                element={
+                  <RedirectIfAuthenticated>
+                    <Register />
+                  </RedirectIfAuthenticated>
+                } 
+              />
               <Route
                 path="/dashboard"
                 element={
