@@ -1,33 +1,54 @@
 // packages/frontend/src/pages/Register.tsx
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import logo from '../assets/logo_black.png';
 
 const Register: React.FC = () => {
-  const { register } = useContext(AuthContext);
+  const { register, user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  useEffect(() => {
+    // If user is logged in, redirect to dashboard
+    if (user) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, location]);
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
     setLoading(true);
     try {
-      await register(email, password);
-      navigate('/dashboard');
+      await register(formData.email, formData.password);
+      // Navigation will be handled by useEffect after user is set
     } catch (err: any) {
+      console.error('Registration error:', err);
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
@@ -35,104 +56,102 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white relative overflow-hidden flex items-center justify-center">
-      {/* Enhanced Abstract Background Design */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-1/4 -top-1/4 w-[800px] h-[800px] bg-blue-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute right-1/4 top-1/3 w-[600px] h-[600px] bg-purple-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute -bottom-1/4 left-1/3 w-[700px] h-[700px] bg-pink-300/40 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-2000"></div>
-      </div>
-
-      <div className="relative z-10 max-w-md w-full m-8">
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-8">
-          <div>
-            {/* Logo or Branding */}
-            <img className="mx-auto h-16 w-auto" src={logo} alt="Your Company" />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#1E1E1E]">
+      <div className="max-w-md w-full glass p-8 rounded-lg">
+        <h2 className="text-2xl font-bold mb-6 text-white">Create Your Account</h2>
+        
+        {error && (
+          <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg mb-6">
+            {error}
           </div>
-          <form className="space-y-6" onSubmit={handleRegister} noValidate>
-            <div className="space-y-4">
-              {/* Email Input */}
-              <div>
-                <label htmlFor="email-address" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
-                  placeholder="Email address"
-                  aria-label="Email address"
-                />
-              </div>
-              {/* Password Input */}
-              <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
-                  placeholder="Password"
-                  aria-label="Password"
-                />
-              </div>
-              {/* Confirm Password Input */}
-              <div>
-                <label htmlFor="confirm-password" className="sr-only">
-                  Confirm Password
-                </label>
-                <input
-                  id="confirm-password"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
-                  placeholder="Confirm Password"
-                  aria-label="Confirm Password"
-                />
-              </div>
-            </div>
+        )}
 
-            {/* Error Message */}
-            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
+          <div>
+            <label htmlFor="email" className="block text-gray-300 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autoComplete="off"
+              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                       text-white placeholder-gray-400 
+                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                       transition-all duration-200"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              aria-required="true"
+            />
+          </div>
 
-            {/* Submit Button */}
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white transition-all duration-200 ${
-                  loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-              >
-                {loading ? 'Registering...' : 'Register'}
-              </button>
-            </div>
+          <div>
+            <label htmlFor="password" className="block text-gray-300 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autoComplete="off"
+              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                       text-white placeholder-gray-400 
+                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                       transition-all duration-200"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              aria-required="true"
+            />
+          </div>
 
-            {/* Link to Login */}
-            <div className="text-sm text-center pt-4">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign in here
-              </Link>
-            </div>
-          </form>
-        </div>
+          <div>
+            <label htmlFor="confirmPassword" className="block text-gray-300 mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              autoComplete="off"
+              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
+                       text-white placeholder-gray-400 
+                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
+                       transition-all duration-200"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full btn-modern ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating Account...
+              </span>
+            ) : (
+              'Create Account'
+            )}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-gray-400">
+          Already have an account?{' '}
+          <Link to="/login" className="text-[#00D8FF] hover:text-[#FF3366] font-medium transition-colors duration-200">
+            Login here
+          </Link>
+        </p>
       </div>
     </div>
   );

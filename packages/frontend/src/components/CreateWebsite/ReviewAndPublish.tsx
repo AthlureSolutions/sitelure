@@ -1,118 +1,212 @@
 // packages/frontend/src/components/CreateWebsite/ReviewAndPublish.tsx
+
 import React, { useContext, useState } from 'react';
 import { WebsiteContext } from '../../context/WebsiteContext';
-import axios from 'axios';
+import api from '../../api';
+import Loading from '../LoadingOverlay';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
 
-interface Props {
-  prevStep: () => void;
-}
-
-const ReviewAndPublish: React.FC<Props> = ({ prevStep }) => {
-  const { businessInfo, logoUrl, colors, content, template } = useContext(WebsiteContext);
-  const { user } = useContext(AuthContext);
-  const [publishing, setPublishing] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
+const ReviewAndPublish: React.FC<{ prevStep: () => void }> = ({ prevStep }) => {
+  const { websiteData } = useContext(WebsiteContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [publishStatus, setPublishStatus] = useState('');
   const navigate = useNavigate();
 
+  const uploadLogo = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await api.post('/websites/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data.url;
+  };
+
   const handlePublish = async () => {
-    setPublishing(true);
+    setLoading(true);
     setError('');
+    setPublishStatus('Preparing your website...');
+
     try {
-      const response = await axios.post('/api/websites', {
-        businessInfo,
-        logoUrl,
-        colors,
-        content,
-        template,
-      }, {
-        headers: {
-          Authorization: `Bearer ${user}`,
+      let logoUrl = '';
+      if (websiteData.logo) {
+        setPublishStatus('Uploading logo...');
+        logoUrl = await uploadLogo(websiteData.logo);
+      }
+
+      setPublishStatus('Processing website data...');
+
+      // Validate business name before formatting data
+      if (!websiteData.businessInfo.businessName?.trim()) {
+        throw new Error('Business name is required');
+      }
+
+      // Format data for backend
+      const formattedData = {
+        businessInfo: {
+          name: websiteData.businessInfo.businessName,
+          email: websiteData.businessInfo.businessEmail,
+          description: websiteData.businessInfo.businessDescription
         },
-      });
-      setSuccess('Website is being generated and will be live shortly!');
-      // Optionally, redirect to dashboard
-      // navigate('/dashboard');
+        contactInfo: {
+          phoneNumber: websiteData.contactInfo.phoneNumber,
+          email: websiteData.contactInfo.email,
+          address: websiteData.contactInfo.address
+        },
+        logoUrl,
+        colors: {
+          primary: websiteData.colorPalette[0] || '#3B82F6',
+          secondary: websiteData.colorPalette[1] || '#1E40AF'
+        },
+        template: websiteData.template || 'default',
+        content: websiteData.content || '',
+        seoSettings: {
+          metaTitle: websiteData.businessInfo.businessName,
+          metaDescription: websiteData.businessInfo.businessDescription,
+          metaKeywords: websiteData.keywords?.join(', ') || ''
+        },
+        socialMediaLinks: {
+          facebook: websiteData.socialMediaLinks.facebook || '',
+          twitter: websiteData.socialMediaLinks.twitter || '',
+          instagram: websiteData.socialMediaLinks.instagram || '',
+          linkedin: websiteData.socialMediaLinks.linkedin || ''
+        }
+      };
+
+      setPublishStatus('Creating your website...');
+      const response = await api.post('/websites', formattedData);
+
+      setPublishStatus('Website published successfully!');
+      setSuccess(`Your website has been published! You can view it at: ${response.data.deployUrl}`);
+      setLoading(false);
+      navigate('/dashboard');
     } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Failed to publish website.');
-    } finally {
-      setPublishing(false);
+      console.error('Error publishing website:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to publish website');
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Review and Publish</h2>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-white mb-4">Review and Publish</h2>
+      {error && <p className="bg-red-500/10 border border-red-500/50 rounded-lg p-2 text-red-500 text-center text-sm">{error}</p>}
+      {success && <p className="bg-green-500/10 border border-green-500/50 rounded-lg p-2 text-green-500 text-center text-sm">{success}</p>}
+      
+      {loading && <Loading message={publishStatus} />}
 
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Business Information</h3>
-        <p className="text-gray-700"><strong>Name:</strong> {businessInfo.name}</p>
-        <p className="text-gray-700"><strong>Industry:</strong> {businessInfo.industry}</p>
-        <p className="text-gray-700"><strong>Description:</strong> {businessInfo.description}</p>
-        {logoUrl && (
-          <div className="mt-4">
-            <strong className="text-gray-700">Logo:</strong>
-            <img src={logoUrl} alt="Business Logo" className="w-24 h-24 object-cover mt-2 border border-gray-300 rounded" />
+      {/* Business & Contact Information */}
+      <div className="glass p-4 rounded-lg">
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Business Info */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Business Information</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="text-gray-400">Name:</span> <span className="text-white ml-2">{websiteData.businessInfo.businessName}</span></p>
+              <p><span className="text-gray-400">Email:</span> <span className="text-white ml-2">{websiteData.businessInfo.businessEmail}</span></p>
+              <p><span className="text-gray-400">Description:</span> <span className="text-white ml-2">{websiteData.businessInfo.businessDescription}</span></p>
+            </div>
           </div>
-        )}
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Contact Information</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="text-gray-400">Phone:</span> <span className="text-white ml-2">{websiteData.contactInfo.phoneNumber}</span></p>
+              <p><span className="text-gray-400">Address:</span> <span className="text-white ml-2">{websiteData.contactInfo.address}</span></p>
+              <p><span className="text-gray-400">Email:</span> <span className="text-white ml-2">{websiteData.contactInfo.email}</span></p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Color Palette</h3>
-        <p className="text-gray-700 flex items-center">
-          <strong>Primary Color:</strong>
-          <span 
-            className="inline-block w-6 h-6 rounded-full ml-2 border border-gray-300" 
-            style={{ backgroundColor: colors.primary }} 
-            aria-hidden="true"
-          ></span>
-          <span className="ml-2">{colors.primary}</span>
-        </p>
-        <p className="text-gray-700 flex items-center">
-          <strong>Secondary Color:</strong>
-          <span 
-            className="inline-block w-6 h-6 rounded-full ml-2 border border-gray-300" 
-            style={{ backgroundColor: colors.secondary }} 
-            aria-hidden="true"
-          ></span>
-          <span className="ml-2">{colors.secondary}</span>
-        </p>
+      {/* Logo & Colors */}
+      <div className="glass p-4 rounded-lg">
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Logo */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Logo</h3>
+            {websiteData.logo ? (
+              <div className="bg-[#2A2A2A] rounded-lg p-2">
+                <img src={URL.createObjectURL(websiteData.logo)} alt="Logo Preview" className="max-h-24 w-auto object-contain mx-auto" />
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">No logo uploaded</p>
+            )}
+          </div>
+          {/* Color Palette */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Color Palette</h3>
+            <div className="flex flex-wrap gap-2">
+              {websiteData.colorPalette.map((color, index) => (
+                <div
+                  key={index}
+                  className="w-8 h-8 rounded-lg ring-1 ring-gray-600"
+                  style={{ backgroundColor: color }}
+                  title={color}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Generated Content</h3>
-        <p className="text-gray-700">{content}</p>
+      {/* SEO & Social */}
+      <div className="glass p-4 rounded-lg">
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* SEO Settings */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">SEO Settings</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="text-gray-400">Title:</span> <span className="text-white ml-2">{websiteData.seoSettings.metaTitle}</span></p>
+              <p><span className="text-gray-400">Description:</span> <span className="text-white ml-2">{websiteData.seoSettings.metaDescription}</span></p>
+              <p><span className="text-gray-400">Keywords:</span> <span className="text-white ml-2">{websiteData.seoSettings.metaKeywords}</span></p>
+            </div>
+          </div>
+          {/* Social Media */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Social Media Links</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="text-gray-400">Facebook:</span> <span className="text-white ml-2 break-all">{websiteData.socialMediaLinks.facebook || 'N/A'}</span></p>
+              <p><span className="text-gray-400">Twitter:</span> <span className="text-white ml-2 break-all">{websiteData.socialMediaLinks.twitter || 'N/A'}</span></p>
+              <p><span className="text-gray-400">Instagram:</span> <span className="text-white ml-2 break-all">{websiteData.socialMediaLinks.instagram || 'N/A'}</span></p>
+              <p><span className="text-gray-400">LinkedIn:</span> <span className="text-white ml-2 break-all">{websiteData.socialMediaLinks.linkedin || 'N/A'}</span></p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Selected Template</h3>
-        <p className="text-gray-700 capitalize">{template.replace('-', ' ')}</p>
-        <img src={`/assets/templates/${template}.png`} alt={`${template} Template`} className="w-full h-auto rounded shadow-md mt-4" />
+      {/* Content & Template */}
+      <div className="glass p-4 rounded-lg">
+        <div className="space-y-4">
+          {/* Template */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-2">Selected Template</h3>
+            <p className="text-white text-sm">{websiteData.template}</p>
+          </div>
+        </div>
       </div>
 
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-      {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
-
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center pt-4">
         <button
           type="button"
           onClick={prevStep}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="btn-modern-sm"
         >
           Back
         </button>
         <button
-          type="button"
           onClick={handlePublish}
-          disabled={publishing}
-          className={`bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-            publishing ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          disabled={loading}
+          className={`bg-gradient-to-r from-[#00D8FF] to-[#00FF94] text-black font-bold px-6 py-2 rounded-lg 
+                     transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,216,255,0.3)]
+                     ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}`}
         >
-          {publishing ? 'Publishing...' : 'Publish'}
+          {loading ? 'Publishing...' : 'Launch Website'}
         </button>
       </div>
     </div>

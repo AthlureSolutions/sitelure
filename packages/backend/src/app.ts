@@ -6,14 +6,21 @@ import websiteRoutes from './routes/websiteRoutes';
 
 const app = express();
 
-app.use(cors());
+// Configure CORS with specific origin
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
+
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/websites', websiteRoutes);
+app.use('/auth', authRoutes);
+app.use('/websites', websiteRoutes);
 
 // Health Check Endpoint
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 

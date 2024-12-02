@@ -1,6 +1,6 @@
 // packages/frontend/src/context/AuthContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import api from '../api'; // Axios instance
+import api from '../api';
 
 interface AuthContextType {
   user: string | null;
@@ -23,16 +23,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const token = localStorage.getItem('token');
     if (token) {
       setUser(token);
-      // Optionally, decode the token to get user info
     }
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.token);
-    } catch (error) {
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setUser(response.data.token);
+      } else {
+        throw new Error('No token received');
+      }
+    } catch (error: any) {
+      console.error('Login error in AuthContext:', error);
+      // Don't set user state on error
+      localStorage.removeItem('token');
       throw error;
     }
   };
@@ -40,8 +46,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const register = async (email: string, password: string) => {
     try {
       const response = await api.post('/auth/register', { email, password });
-      // Optionally, handle post-registration actions
-    } catch (error) {
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setUser(response.data.token);
+      } else {
+        throw new Error('No token received');
+      }
+    } catch (error: any) {
+      console.error('Registration error in AuthContext:', error);
+      // Don't set user state on error
+      localStorage.removeItem('token');
       throw error;
     }
   };
@@ -49,7 +63,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    // Optionally, additional logout actions
   };
 
   return (
