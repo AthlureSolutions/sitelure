@@ -18,18 +18,44 @@ model User {
 }
 
 model Website {
-  id            String   @id @default(uuid())
-  owner         User     @relation(fields: [ownerId], references: [id])
-  ownerId       String
-  businessName  String
-  industry      String
-  description    String
-  logoUrl       String
-  primaryColor  String
-  secondaryColor String
-  content       String
-  template      String
-  deployUrl     String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(uuid())
+  owner           User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId         String
+  
+  // Business Information
+  businessName    String
+  businessEmail   String
+  businessDescription String @db.Text
+
+  // Contact Information
+  contactEmail    String
+  phoneNumber     String
+  address         String
+
+  // Design
+  logoUrl         String?
+  primaryColor    String
+  secondaryColor  String
+  template        String
+
+  // Social Media Links
+  facebookUrl     String?
+  twitterUrl      String?
+  instagramUrl    String?
+  linkedinUrl     String?
+
+  // SEO Settings
+  metaTitle       String
+  metaDescription String   @db.Text
+  metaKeywords    String
+
+  // Deployment
+  deployUrl       String?
+  content         String   @db.Text
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([ownerId])
 }

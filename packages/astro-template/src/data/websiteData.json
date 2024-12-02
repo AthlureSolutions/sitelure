@@ -1,12 +1,20 @@
 {
-    "businessName": "Default Business",
-    "description": "This is a default description. It will be replaced with the actual business description.",
-    "aboutDescription": "This is the about section. Provide detailed information about your business here.",
-    "logoUrl": "/assets/images/default-logo.png",
-    "colors": {
-      "primary": "#1E3A8A",
-      "secondary": "#9333EA"
-    },
-    "template": "modern-business"
-  }
+  "businessName": "Your Business Name",
+  "businessEmail": "business@example.com",
+  "description": "Your business description goes here",
+  "logoUrl": "",
+  "contactEmail": "contact@example.com",
+  "phoneNumber": "(555) 123-4567",
+  "address": "123 Business St, City, State 12345",
+  "primaryColor": "#3B82F6",
+  "secondaryColor": "#1E40AF",
+  "template": "modern",
+  "facebookUrl": "",
+  "twitterUrl": "",
+  "instagramUrl": "",
+  "linkedinUrl": "",
+  "metaTitle": "Your Business Name - Professional Services",
+  "metaDescription": "Your business description for search engines",
+  "metaKeywords": "business, services, professional"
+}
   

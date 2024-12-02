@@ -134,7 +134,7 @@ const Home: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-[#00D8FF] to-[#FF3366] transform rotate-6 rounded-2xl opacity-75 blur-lg"></div>
               <div className="glass p-4 rounded-2xl relative transform hover:rotate-0 transition-all duration-500 rotate-6">
                 <img 
-                  src="/assets/images/dashboard-preview.png" 
+                  src="https://miro.medium.com/v2/resize:fit:3200/1*3PuVKqPTpotv5eJSwM0ALQ.png" 
                   alt="Dashboard Preview" 
                   className="rounded-xl shadow-2xl"
                 />

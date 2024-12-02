@@ -83,6 +83,12 @@ const Navbar: React.FC = () => {
                   >
                     Dashboard
                   </Link>
+                  <Link
+                    to="/settings"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    Settings
+                  </Link>
                   <button
                     onClick={logout}
                     className="btn-modern py-2 px-4"
@@ -167,6 +173,12 @@ const Navbar: React.FC = () => {
                     className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
                   >
                     Dashboard
+                  </Link>
+                  <Link
+                    to="/settings"
+                    className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    Settings
                   </Link>
                   <button
                     onClick={logout}

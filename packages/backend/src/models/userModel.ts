@@ -23,3 +23,9 @@ export const findUserById = async (id: string): Promise<User | null> => {
     where: { id },
   });
 };
+
+export const deleteUserById = async (id: string): Promise<User> => {
+  return await prisma.user.delete({
+    where: { id },
+  });
+};

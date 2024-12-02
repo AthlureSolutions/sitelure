@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { createUser, findUserByEmail } from '../models/userModel';
+import { createUser, findUserByEmail, deleteUserById, findUserById } from '../models/userModel';
 
 dotenv.config();
 
@@ -16,7 +16,16 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await createUser(email, hashedPassword);
-    res.status(201).json({ message: 'User registered successfully' });
+    
+    // Create token for automatic login
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
+      expiresIn: '1h',
+    });
+
+    res.status(201).json({ 
+      message: 'User registered successfully',
+      token 
+    });
   } catch (error) {
     console.error('Registration Error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -42,5 +51,29 @@ export const login = async (req: Request, res: Response):Promise<any> => {
   } catch (error) {
     console.error('Login Error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const deleteAccount = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = (req as any).user;
+    console.log('Attempting to delete user with ID:', userId);
+
+    // First check if user exists
+    const user = await findUserById(userId);
+    if (!user) {
+      console.error('User not found:', userId);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await deleteUserById(userId);
+    res.json({ message: 'Account successfully deleted' });
+  } catch (error) {
+    console.error('Delete Account Error:', {
+      error,
+      userId: (req as any).user,
+      headers: req.headers
+    });
+    res.status(500).json({ message: 'Failed to delete account' });
   }
 };

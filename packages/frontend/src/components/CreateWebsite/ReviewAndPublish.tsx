@@ -2,59 +2,92 @@
 
 import React, { useContext, useState } from 'react';
 import { WebsiteContext } from '../../context/WebsiteContext';
-import api from '../../api'; // Ensure Axios is correctly configured
+import api from '../../api';
+import Loading from '../LoadingOverlay';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../Loading'; // Optional: A loading spinner component
 
 const ReviewAndPublish: React.FC<{ prevStep: () => void }> = ({ prevStep }) => {
-  const { websiteData, resetWebsiteData } = useContext(WebsiteContext);
+  const { websiteData } = useContext(WebsiteContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [publishStatus, setPublishStatus] = useState('');
   const navigate = useNavigate();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
-  const [publishedUrl, setPublishedUrl] = useState<string>(''); // URL of the published website
+
+  const uploadLogo = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await api.post('/websites/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data.url;
+  };
 
   const handlePublish = async () => {
-    setError('');
-    setSuccess('');
-    setPublishedUrl('');
     setLoading(true);
+    setError('');
+    setPublishStatus('Preparing your website...');
 
     try {
-      const formData = new FormData();
-      formData.append('businessName', websiteData.businessInfo.businessName);
-      formData.append('businessEmail', websiteData.businessInfo.businessEmail);
-      formData.append('businessDescription', websiteData.businessInfo.businessDescription);
-      formData.append('phoneNumber', websiteData.contactInfo.phoneNumber);
-      formData.append('address', websiteData.contactInfo.address);
-      formData.append('contactEmail', websiteData.contactInfo.email);
+      let logoUrl = '';
       if (websiteData.logo) {
-        formData.append('logo', websiteData.logo);
+        setPublishStatus('Uploading logo...');
+        logoUrl = await uploadLogo(websiteData.logo);
       }
-      formData.append('colorPalette', JSON.stringify(websiteData.colorPalette));
-      formData.append('keywords', JSON.stringify(websiteData.keywords));
-      formData.append('socialMediaLinks', JSON.stringify(websiteData.socialMediaLinks));
-      formData.append('template', websiteData.template);
 
-      // Make API call to publish the website
-      const response = await api.post('/websites/publish', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      setPublishStatus('Processing website data...');
+
+      // Validate business name before formatting data
+      if (!websiteData.businessInfo.businessName?.trim()) {
+        throw new Error('Business name is required');
+      }
+
+      // Format data for backend
+      const formattedData = {
+        businessInfo: {
+          name: websiteData.businessInfo.businessName,
+          email: websiteData.businessInfo.businessEmail,
+          description: websiteData.businessInfo.businessDescription
         },
-      });
+        contactInfo: {
+          phoneNumber: websiteData.contactInfo.phoneNumber,
+          email: websiteData.contactInfo.email,
+          address: websiteData.contactInfo.address
+        },
+        logoUrl,
+        colors: {
+          primary: websiteData.colorPalette[0] || '#3B82F6',
+          secondary: websiteData.colorPalette[1] || '#1E40AF'
+        },
+        template: websiteData.template || 'default',
+        content: websiteData.content || '',
+        seoSettings: {
+          metaTitle: websiteData.businessInfo.businessName,
+          metaDescription: websiteData.businessInfo.businessDescription,
+          metaKeywords: websiteData.keywords?.join(', ') || ''
+        },
+        socialMediaLinks: {
+          facebook: websiteData.socialMediaLinks.facebook || '',
+          twitter: websiteData.socialMediaLinks.twitter || '',
+          instagram: websiteData.socialMediaLinks.instagram || '',
+          linkedin: websiteData.socialMediaLinks.linkedin || ''
+        }
+      };
 
-      // Assuming the backend returns the URL of the published site
-      const { website, publishedUrl } = response.data;
+      setPublishStatus('Creating your website...');
+      const response = await api.post('/websites', formattedData);
 
-      setSuccess('Website published successfully!');
-      setPublishedUrl(publishedUrl);
+      setPublishStatus('Website published successfully!');
+      setSuccess(`Your website has been published! You can view it at: ${response.data.deployUrl}`);
       setLoading(false);
-      resetWebsiteData();
-      // Optionally, navigate to the dashboard or the published site
-      // navigate('/dashboard');
+      navigate('/dashboard');
     } catch (err: any) {
-      console.error('Failed to publish website:', err);
-      setError(err.response?.data?.message || 'Failed to publish website. Please try again.');
+      console.error('Error publishing website:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to publish website');
       setLoading(false);
     }
   };
@@ -65,7 +98,7 @@ const ReviewAndPublish: React.FC<{ prevStep: () => void }> = ({ prevStep }) => {
       {error && <p className="bg-red-500/10 border border-red-500/50 rounded-lg p-2 text-red-500 text-center text-sm">{error}</p>}
       {success && <p className="bg-green-500/10 border border-green-500/50 rounded-lg p-2 text-green-500 text-center text-sm">{success}</p>}
       
-      {loading && <Loading />}
+      {loading && <Loading message={publishStatus} />}
 
       {/* Business & Contact Information */}
       <div className="glass p-4 rounded-lg">
