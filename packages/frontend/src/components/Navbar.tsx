@@ -1,196 +1,71 @@
 // packages/frontend/src/components/Navbar.tsx
-import React, { useContext, useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
-  const isExactHomePage = location.pathname === '/';
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToFeatures = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const featuresSection = document.getElementById('features');
-    if (featuresSection) {
-      featuresSection.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
-    <nav className="fixed w-full z-50 top-0">
-      <div className={`glass border-b border-white/10 transition-all duration-300 ${
-        isExactHomePage 
-          ? isScrolled ? 'bg-[#1E1E1E]/95 backdrop-blur-lg' : 'bg-transparent'
-          : 'bg-[#1E1E1E]/95 backdrop-blur-lg'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to={user ? "/dashboard" : "/"} className="flex items-center">
-                <span className="text-2xl font-bold text-gradient">SiteLure</span>
-              </Link>
-            </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 nav-bg border-b border-[var(--border-primary)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/" className="text-2xl font-black tracking-tight text-gradient">
+              SiteLure
+            </Link>
+          </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {!user ? (
-                <>
-                  <Link
-                    to="/"
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Home
-                  </Link>
-                  {isExactHomePage && (
-                    <a
-                      href="#features"
-                      onClick={scrollToFeatures}
-                      className="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer"
-                    >
-                      Features
-                    </a>
-                  )}
-                  <Link
-                    to="/login"
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="btn-modern py-2 px-4"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/dashboard"
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Settings
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="btn-modern py-2 px-4"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-300 hover:text-white focus:outline-none"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {isMenuOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  )}
+          <div className="flex items-center gap-4">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg hover:bg-[var(--hover-bg)] transition-colors"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-              </button>
-            </div>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {user ? (
+              <>
+                <Link to="/dashboard" className="btn-modern-sm">
+                  Dashboard
+                </Link>
+                <Link to="/settings" className="btn-modern-sm">
+                  Settings
+                </Link>
+                <button onClick={handleLogout} className="btn-modern-sm">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="btn-modern-sm">
+                  Login
+                </Link>
+                <Link to="/register" className="btn-modern">
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden glass border-t border-white/10">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {!user ? (
-                <>
-                  <Link
-                    to="/"
-                    className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Home
-                  </Link>
-                  {isExactHomePage && (
-                    <a
-                      href="#features"
-                      onClick={scrollToFeatures}
-                      className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer"
-                    >
-                      Features
-                    </a>
-                  )}
-                  <Link
-                    to="/login"
-                    className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="block px-3 py-2 btn-modern"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/dashboard"
-                    className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="block px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Settings
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );

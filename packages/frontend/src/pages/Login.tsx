@@ -56,9 +56,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1E1E1E]">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4">
       <div className="max-w-md w-full glass p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-6 text-white">Login to Your Account</h2>
+        <h2 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">Login to Your Account</h2>
         
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg mb-6">
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" noValidate>
           <div>
-            <label htmlFor="email" className="block text-gray-300 mb-2">
+            <label htmlFor="email" className="form-label">
               Email
             </label>
             <input
@@ -76,10 +76,7 @@ const Login: React.FC = () => {
               id="email"
               name="email"
               autoComplete="off"
-              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                       text-white placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                       transition-all duration-200"
+              className="form-input"
               value={formData.email}
               onChange={handleChange}
               required
@@ -88,7 +85,7 @@ const Login: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-300 mb-2">
+            <label htmlFor="password" className="form-label">
               Password
             </label>
             <input
@@ -96,10 +93,7 @@ const Login: React.FC = () => {
               id="password"
               name="password"
               autoComplete="off"
-              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                       text-white placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                       transition-all duration-200"
+              className="form-input"
               value={formData.password}
               onChange={handleChange}
               required
@@ -126,7 +120,7 @@ const Login: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-400">
+        <p className="mt-6 text-center text-[var(--text-secondary)]">
           Don't have an account?{' '}
           <Link to="/register" className="text-[#00D8FF] hover:text-[#FF3366] font-medium transition-colors duration-200">
             Register here

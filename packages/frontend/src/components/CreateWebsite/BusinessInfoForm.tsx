@@ -45,7 +45,7 @@ const BusinessInfoForm: React.FC<BusinessInfoFormProps> = ({ nextStep }) => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">Business Information</h2>
+      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Business Information</h2>
       
       {error && (
         <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-500 text-center">
@@ -55,60 +55,54 @@ const BusinessInfoForm: React.FC<BusinessInfoFormProps> = ({ nextStep }) => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="businessName" className="block text-gray-300 mb-2 font-medium">
+          <label htmlFor="businessName" className="form-label">
             Business Name
           </label>
           <input
             type="text"
             id="businessName"
+            name="businessName"
+            className="form-input"
             value={businessName}
             onChange={(e) => setBusinessName(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200"
-            placeholder="Enter your business name"
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="businessEmail" className="block text-gray-300 mb-2 font-medium">
+          <label htmlFor="businessEmail" className="form-label">
             Business Email
           </label>
           <input
             type="email"
             id="businessEmail"
+            name="businessEmail"
+            className="form-input"
             value={businessEmail}
             onChange={(e) => setBusinessEmail(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200"
-            placeholder="contact@yourbusiness.com"
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="businessDescription" className="block text-gray-300 mb-2 font-medium">
+          <label htmlFor="businessDescription" className="form-label">
             Business Description
           </label>
           <textarea
             id="businessDescription"
+            name="businessDescription"
+            rows={4}
+            className="form-input"
             value={businessDescription}
             onChange={(e) => setBusinessDescription(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200
-                     h-32 resize-none"
-            placeholder="Tell us what your business does..."
+            required
           />
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end">
           <button
             type="submit"
-            className="btn-modern px-8 py-2"
+            className="btn-modern"
           >
             Next Step
           </button>

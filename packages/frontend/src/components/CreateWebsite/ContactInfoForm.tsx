@@ -46,7 +46,7 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({ nextStep, prevStep })
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">Contact Information</h2>
+      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Contact Information</h2>
       
       {error && (
         <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-500 text-center">
@@ -56,67 +56,61 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({ nextStep, prevStep })
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="phoneNumber" className="block text-gray-300 mb-2 font-medium">
+          <label htmlFor="contactEmail" className="form-label">
+            Contact Email
+          </label>
+          <input
+            type="email"
+            id="contactEmail"
+            name="contactEmail"
+            className="form-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="phoneNumber" className="form-label">
             Phone Number
           </label>
           <input
             type="tel"
             id="phoneNumber"
+            name="phoneNumber"
+            className="form-input"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200"
-            placeholder="+1 (555) 123-4567"
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-gray-300 mb-2 font-medium">
+          <label htmlFor="address" className="form-label">
             Business Address
           </label>
-          <input
-            type="text"
+          <textarea
             id="address"
+            name="address"
+            rows={3}
+            className="form-input"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200"
-            placeholder="123 Main St, Anytown, USA"
+            required
           />
         </div>
 
-        <div>
-          <label htmlFor="email" className="block text-gray-300 mb-2 font-medium">
-            Contact Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                     text-white placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                     transition-all duration-200"
-            placeholder="contact@yourbusiness.com"
-          />
-        </div>
-
-        <div className="flex justify-between pt-4">
+        <div className="flex justify-between">
           <button
             type="button"
             onClick={prevStep}
             className="btn-modern-sm"
           >
-            Previous
+            Previous Step
           </button>
           <button
             type="submit"
-            className="btn-modern px-8 py-2"
+            className="btn-modern"
           >
             Next Step
           </button>

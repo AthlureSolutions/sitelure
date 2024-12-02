@@ -35,7 +35,7 @@ const CreateWebsite: React.FC = () => {
 
   return (
     <WebsiteProvider>
-      <div className="min-h-screen bg-[#1E1E1E] pt-24 px-6 pb-6">
+      <div className="min-h-screen bg-[var(--bg-primary)] pt-24 px-6 pb-6">
         {/* Step Indicator */}
         <div className="max-w-4xl mx-auto mb-8">
           <ProgressIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />

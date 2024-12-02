@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#1E1E1E]">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Hero Section - Full Screen */}
       <section className="h-screen relative overflow-hidden flex items-center justify-center">
         {/* Enhanced Futuristic Background */}
@@ -17,32 +17,32 @@ const Home: React.FC = () => {
           </div>
           {/* Animated grid background */}
           <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(rgba(30, 30, 30, 0.8) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(30, 30, 30, 0.8) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(rgba(30, 30, 30, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(30, 30, 30, 0.3) 1px, transparent 1px)`,
             backgroundSize: '50px 50px',
-            opacity: 0.2
+            opacity: 0.1
           }}></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8">
-            <span className="block text-white mb-4">Create Your</span>
-            <span className="text-gradient">Future Website</span>
+            <span className="block text-[var(--text-primary)] mb-4 text-shadow-lg">Create Your</span>
+            <span className="text-gradient text-shadow-lg">Future Website</span>
           </h1>
-          <p className="mt-6 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 font-light">
+          <p className="mt-6 text-xl md:text-2xl text-[var(--text-primary)] max-w-3xl mx-auto mb-12 font-light text-shadow-md">
             Build a stunning website with our AI-powered platform. No coding required.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/register"
-              className="btn-modern group flex items-center justify-center"
+              className="btn-modern group flex items-center justify-center text-white"
             >
               Get Started
               <span className="absolute right-4 group-hover:translate-x-1 transition-transform">→</span>
             </Link>
             <Link
               to="/login"
-              className="glass px-8 py-4 text-white text-lg font-medium rounded-lg hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
+              className="glass px-8 py-4 text-[var(--text-primary)] text-lg font-medium rounded-lg hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
             >
               Sign In
             </Link>
@@ -52,11 +52,11 @@ const Home: React.FC = () => {
 
       {/* Features Section */}
       <section id="features" className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#1E1E1E]/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--bg-secondary)]/90"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-20">
             <h2 className="text-[#00D8FF] font-semibold tracking-wide uppercase text-sm">The Future of Web Design</h2>
-            <p className="mt-2 text-4xl font-bold text-white">
+            <p className="mt-2 text-4xl font-bold text-[var(--text-primary)]">
               Powered by Advanced Technology
             </p>
           </div>
@@ -69,8 +69,8 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">AI-Powered Design</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4">AI-Powered Design</h3>
+              <p className="text-[var(--text-secondary)]">
                 Advanced algorithms create stunning designs tailored to your brand identity.
               </p>
             </div>
@@ -81,8 +81,8 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Responsive Design</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4">Responsive Design</h3>
+              <p className="text-[var(--text-secondary)]">
                 Automatically adapts to any device with intelligent layout optimization.
               </p>
             </div>
@@ -93,8 +93,8 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Smart Analytics</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4">Smart Analytics</h3>
+              <p className="text-[var(--text-secondary)]">
                 Real-time insights and performance metrics to optimize your online presence.
               </p>
             </div>
@@ -109,10 +109,10 @@ const Home: React.FC = () => {
             <div>
               <div className="p-8">
                 <h2 className="text-[#00D8FF] font-semibold tracking-wide uppercase mb-4">Intelligent Platform</h2>
-                <p className="text-4xl font-bold text-white">
+                <p className="text-4xl font-bold text-[var(--text-primary)]">
                   The Future of Website Creation
                 </p>
-                <p className="mt-4 text-gray-300 text-lg">
+                <p className="mt-4 text-[var(--text-secondary)] text-lg">
                   Experience the next generation of web design with our AI-powered platform.
                 </p>
               </div>
@@ -124,8 +124,8 @@ const Home: React.FC = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-2">Instant Deployment</h3>
-                    <p className="text-gray-300">Launch your website with one click using our advanced cloud infrastructure.</p>
+                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Instant Deployment</h3>
+                    <p className="text-[var(--text-secondary)]">Launch your website with one click using our advanced cloud infrastructure.</p>
                   </div>
                 </div>
               </div>

@@ -33,7 +33,7 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white p-8">
+    <div className="min-h-screen bg-[var(--bg-primary)] p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
 

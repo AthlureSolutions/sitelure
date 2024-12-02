@@ -56,9 +56,9 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1E1E1E]">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4">
       <div className="max-w-md w-full glass p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-6 text-white">Create Your Account</h2>
+        <h2 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">Create Your Account</h2>
         
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg mb-6">
@@ -66,9 +66,9 @@ const Register: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
+        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" noValidate>
           <div>
-            <label htmlFor="email" className="block text-gray-300 mb-2">
+            <label htmlFor="email" className="form-label">
               Email
             </label>
             <input
@@ -76,10 +76,7 @@ const Register: React.FC = () => {
               id="email"
               name="email"
               autoComplete="off"
-              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                       text-white placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                       transition-all duration-200"
+              className="form-input"
               value={formData.email}
               onChange={handleChange}
               required
@@ -88,7 +85,7 @@ const Register: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-300 mb-2">
+            <label htmlFor="password" className="form-label">
               Password
             </label>
             <input
@@ -96,31 +93,8 @@ const Register: React.FC = () => {
               id="password"
               name="password"
               autoComplete="off"
-              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                       text-white placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                       transition-all duration-200"
+              className="form-input"
               value={formData.password}
-              onChange={handleChange}
-              required
-              aria-required="true"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="confirmPassword" className="block text-gray-300 mb-2">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              autoComplete="off"
-              className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg p-3 
-                       text-white placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#00D8FF] focus:border-transparent
-                       transition-all duration-200"
-              value={formData.confirmPassword}
               onChange={handleChange}
               required
               aria-required="true"
@@ -138,7 +112,7 @@ const Register: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Creating Account...
+                Creating account...
               </span>
             ) : (
               'Create Account'
@@ -146,7 +120,7 @@ const Register: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-400">
+        <p className="mt-6 text-center text-[var(--text-secondary)]">
           Already have an account?{' '}
           <Link to="/login" className="text-[#00D8FF] hover:text-[#FF3366] font-medium transition-colors duration-200">
             Login here

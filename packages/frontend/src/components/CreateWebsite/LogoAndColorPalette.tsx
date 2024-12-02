@@ -78,7 +78,7 @@ const LogoAndColorPalette: React.FC<LogoAndColorPaletteProps> = ({ nextStep, pre
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold mb-6 text-white">Logo and Color Palette</h2>
+      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Logo & Color Palette</h2>
       {error && <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-500 text-center">{error}</div>}
       
       {/* Logo Upload */}

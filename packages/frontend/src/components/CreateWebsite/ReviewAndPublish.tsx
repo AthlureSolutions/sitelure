@@ -93,8 +93,8 @@ const ReviewAndPublish: React.FC<{ prevStep: () => void }> = ({ prevStep }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-white mb-4">Review and Publish</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Review & Publish</h2>
       {error && <p className="bg-red-500/10 border border-red-500/50 rounded-lg p-2 text-red-500 text-center text-sm">{error}</p>}
       {success && <p className="bg-green-500/10 border border-green-500/50 rounded-lg p-2 text-green-500 text-center text-sm">{success}</p>}
       

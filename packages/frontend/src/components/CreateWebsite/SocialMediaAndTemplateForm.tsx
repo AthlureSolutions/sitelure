@@ -62,7 +62,7 @@ const SocialMediaAndTemplateForm: React.FC<SocialMediaAndTemplateFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold mb-6 text-white">Social Media Links & Template</h2>
+      <h2 className="text-2xl font-bold text-[var(--text-primary)]">Social Media & Template</h2>
       {error && <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3 text-red-500 text-center">{error}</div>}
 
       {/* Social Media Links */}

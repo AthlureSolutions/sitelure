@@ -130,8 +130,8 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Success Message */}
         {location.state?.success && (
           <div className="bg-green-500/10 border border-green-500 text-green-500 p-4 rounded-lg mb-8">
@@ -173,13 +173,13 @@ const Dashboard: React.FC = () => {
                 <div 
                   key={website.id} 
                   onClick={() => handleWebsiteClick(website.id)}
-                  className="glass cursor-pointer transform hover:scale-[1.02] transition-all duration-300 rounded-lg p-6 border border-gray-700 hover:border-[#00D8FF]"
+                  className="glass cursor-pointer transform hover:scale-[1.02] transition-all duration-300 rounded-lg p-6 border border-[var(--border-primary)] hover:border-[#00D8FF]"
                 >
                   <div className="flex items-center justify-center h-32 mb-4">
                     <HiGlobe className="w-16 h-16 text-[#00D8FF]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-center mb-2">{website.businessName}</h3>
-                  <p className="text-gray-400 text-center mb-4">{website.businessDescription}</p>
+                  <h3 className="text-xl font-semibold text-center mb-2 text-[var(--text-primary)]">{website.businessName}</h3>
+                  <p className="text-[var(--text-secondary)] text-center mb-4">{website.businessDescription}</p>
                   <div className="flex justify-center gap-4">
                     {website.deployUrl && (
                       <a 
@@ -193,18 +193,18 @@ const Dashboard: React.FC = () => {
                       </a>
                     )}
                   </div>
-                  <div className="mt-4 text-center text-sm text-gray-500">
+                  <div className="mt-4 text-center text-sm text-[var(--text-tertiary)]">
                     Created on {formatDate(website.createdAt)}
                   </div>
                 </div>
               ))
             ) : (
               <div className="col-span-full">
-                <div className="glass rounded-lg p-8 border border-gray-700">
+                <div className="glass rounded-lg p-8 border border-[var(--border-primary)]">
                   <div className="flex flex-col items-center justify-center text-center">
-                    <HiTemplate className="w-16 h-16 text-gray-600 mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No Websites Yet</h3>
-                    <p className="text-gray-400 mb-6">
+                    <HiTemplate className="w-16 h-16 text-[var(--text-tertiary)] mb-4" />
+                    <h3 className="text-xl font-semibold mb-2 text-[var(--text-primary)]">No Websites Yet</h3>
+                    <p className="text-[var(--text-secondary)] mb-6">
                       Start your journey by creating your first website with our step-by-step builder
                     </p>
                     <button
@@ -223,10 +223,10 @@ const Dashboard: React.FC = () => {
         
         {/* Website Details Modal */}
         {selectedWebsite && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="glass rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold">{selectedWebsite.businessName}</h2>
+                <h2 className="text-2xl font-bold text-[var(--text-primary)]">{selectedWebsite.businessName}</h2>
                 <div className="flex gap-2">
                   {!deleteConfirm ? (
                     <button
@@ -242,143 +242,21 @@ const Dashboard: React.FC = () => {
                       <button
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        className="btn-modern-sm bg-red-600 hover:bg-red-700"
+                        className="btn-modern-sm bg-red-600 hover:bg-red-700 text-white"
                       >
                         {isDeleting ? 'Deleting...' : 'Confirm Delete'}
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(false)}
-                        disabled={isDeleting}
                         className="btn-modern-sm"
                       >
                         Cancel
                       </button>
                     </div>
                   )}
-                  <button
-                    onClick={() => setSelectedWebsite(null)}
-                    className="btn-modern-sm"
-                  >
-                    Close
-                  </button>
                 </div>
               </div>
-              
-              <div className="space-y-6">
-                {/* Business Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Business Information</h3>
-                  <div className="space-y-2 text-gray-300">
-                    <p>Name: {selectedWebsite.businessName}</p>
-                    <p>Email: {selectedWebsite.businessEmail}</p>
-                    <p>Description: {selectedWebsite.businessDescription}</p>
-                  </div>
-                </div>
-
-                {/* Contact Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Contact Information</h3>
-                  <div className="space-y-2 text-gray-300">
-                    <p>Email: {selectedWebsite.contactEmail}</p>
-                    <p>Phone: {selectedWebsite.phoneNumber || 'Not provided'}</p>
-                    <p>Address: {selectedWebsite.address || 'Not provided'}</p>
-                  </div>
-                </div>
-
-                {/* Design */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Design</h3>
-                  <div className="space-y-4">
-                    {selectedWebsite.logoUrl && (
-                      <div>
-                        <p className="text-gray-300 mb-2">Logo:</p>
-                        <img 
-                          src={selectedWebsite.logoUrl} 
-                          alt="Logo" 
-                          className="h-20 object-contain bg-white/5 rounded-lg p-2"
-                        />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-gray-300 mb-2">Colors:</p>
-                      <div className="flex gap-4 items-center">
-                        <div>
-                          <p className="text-sm text-gray-400 mb-1">Primary</p>
-                          <div 
-                            className="w-8 h-8 rounded-full border border-gray-600" 
-                            style={{ backgroundColor: selectedWebsite.primaryColor }}
-                            title={selectedWebsite.primaryColor}
-                          />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-400 mb-1">Secondary</p>
-                          <div 
-                            className="w-8 h-8 rounded-full border border-gray-600" 
-                            style={{ backgroundColor: selectedWebsite.secondaryColor }}
-                            title={selectedWebsite.secondaryColor}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-gray-300">Template: {selectedWebsite.template}</p>
-                  </div>
-                </div>
-
-                {/* Social Media Links */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Social Media</h3>
-                  <div className="space-y-2 text-gray-300">
-                    {selectedWebsite.facebookUrl && (
-                      <p>Facebook: <a href={selectedWebsite.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
-                    )}
-                    {selectedWebsite.twitterUrl && (
-                      <p>Twitter: <a href={selectedWebsite.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
-                    )}
-                    {selectedWebsite.instagramUrl && (
-                      <p>Instagram: <a href={selectedWebsite.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
-                    )}
-                    {selectedWebsite.linkedinUrl && (
-                      <p>LinkedIn: <a href={selectedWebsite.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-[#00D8FF] hover:underline">View Profile</a></p>
-                    )}
-                    {!selectedWebsite.facebookUrl && !selectedWebsite.twitterUrl && !selectedWebsite.instagramUrl && !selectedWebsite.linkedinUrl && (
-                      <p className="text-gray-500">No social media links provided</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* SEO Settings */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">SEO Settings</h3>
-                  <div className="space-y-2 text-gray-300">
-                    <p>Title: {selectedWebsite.metaTitle || selectedWebsite.businessName}</p>
-                    <p>Description: {selectedWebsite.metaDescription || selectedWebsite.businessDescription}</p>
-                    <p>Keywords: {selectedWebsite.metaKeywords || 'None specified'}</p>
-                  </div>
-                </div>
-
-                {/* Deployment */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[#00D8FF] mb-2">Deployment</h3>
-                  {selectedWebsite.deployUrl ? (
-                    <a 
-                      href={selectedWebsite.deployUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-[#00D8FF] hover:underline flex items-center gap-2"
-                    >
-                      View Live Website <HiExternalLink className="w-4 h-4" />
-                    </a>
-                  ) : (
-                    <p className="text-gray-500">Website not deployed yet</p>
-                  )}
-                </div>
-
-                {/* Timestamps */}
-                <div className="text-sm text-gray-500 pt-4 border-t border-gray-700">
-                  <p>Created: {formatDate(selectedWebsite.createdAt)}</p>
-                  <p>Last Updated: {formatDate(selectedWebsite.updatedAt)}</p>
-                </div>
-              </div>
+              {/* Add more website details here */}
             </div>
           </div>
         )}
