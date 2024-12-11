@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import PageHero from '../../components/PageHero.astro';
+import Features from '../../components/Features.astro';
+import Quote from '../../components/Quote.astro';
+import Footer from '../../components/Footer.astro';
+import websiteData from '../../data/websiteData.json';
+import type { WebsiteData, Service } from '../../types/website';
+
+export async function getStaticPaths() {
+  const data = websiteData as WebsiteData;
+  return data.site.services.map((service) => ({
+    params: { id: service.id },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const data = websiteData as WebsiteData;
+
+// Create a modified site config for this service page
+const serviceConfig = {
+  ...data.site,
+  features: service.features
+};
+---
+
+<BaseLayout title={`${service.title} - ${data.site.name}`} description={service.shortDescription}>
+  <Header config={data.site} />
+  <main>
+    <PageHero
+      title={service.title}
+      description={service.shortDescription}
+      backgroundImage={service.heroImage}
+    >
+      <div class="flex flex-wrap gap-4 mt-8 animate-[slideUp_0.5s_ease-out_0.4s] opacity-0 [animation-fill-mode:forwards]">
+        <a href="/contact" class="btn text-lg px-8 py-4">
+          Get Started
+        </a>
+      </div>
+    </PageHero>
+    <Features config={serviceConfig} />
+    <Quote 
+      quote={service.quote.text}
+      author={service.quote.author}
+      role={service.quote.role}
+    />
+  </main>
+  <Footer config={data.site} />
+</BaseLayout> 

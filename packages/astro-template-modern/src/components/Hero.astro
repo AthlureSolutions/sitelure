@@ -1,0 +1,91 @@
+---
+import type { SiteConfig } from '../types/website';
+import { placeholderImage } from '../types/website';
+
+interface Props {
+  config: SiteConfig;
+}
+
+const { config } = Astro.props;
+const { hero } = config;
+const backgroundImage = hero.backgroundImage || placeholderImage;
+---
+
+<section class="relative h-screen flex items-center overflow-hidden">
+  <!-- Background Image with Parallax -->
+  <div 
+    class="absolute inset-0 z-0"
+    style={{
+      transform: "translateY(var(--parallax-offset, 0))",
+      transition: "transform 0.1s ease-out",
+    }}
+  >
+    <img
+      src={backgroundImage}
+      alt=""
+      class="w-full h-[120%] object-cover"
+    />
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-black/95"></div>
+    
+    <!-- Micro grid overlay -->
+    <div
+      class="absolute inset-0 opacity-10"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+        backgroundSize: '5px 5px'
+      }}
+    ></div>
+  </div>
+
+  <!-- Content -->
+  <div class="container-custom relative z-10">
+    <div class="max-w-4xl text-white">
+      <h1 class="text-8xl md:text-9xl xl:text-[12rem] font-heading font-black leading-tight mb-8 animate-[slideUp_0.5s_ease-out]">
+        {hero.headline}
+      </h1>
+      <p class="text-2xl md:text-3xl mb-10 text-white/90 animate-[slideUp_0.5s_ease-out_0.2s] opacity-0 [animation-fill-mode:forwards]">
+        {hero.subheadline}
+      </p>
+      
+      <div class="flex flex-wrap gap-4 animate-[slideUp_0.5s_ease-out_0.4s] opacity-0 [animation-fill-mode:forwards]">
+        <a
+          href={hero.cta.primary.href}
+          class="btn text-lg px-8 py-4"
+        >
+          {hero.cta.primary.text}
+        </a>
+        
+        {hero.cta.secondary && (
+          <a
+            href={hero.cta.secondary.href}
+            class="btn btn-white-outline text-lg px-8 py-4"
+          >
+            {hero.cta.secondary.text}
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <svg
+      class="w-8 h-8 text-white"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+
+  <script>
+    // Add parallax effect
+    window.addEventListener('scroll', () => {
+      const offset = window.scrollY * 0.5; // Adjust multiplier for parallax intensity
+      document.documentElement.style.setProperty('--parallax-offset', `${offset}px`);
+    });
+  </script>
+</section>

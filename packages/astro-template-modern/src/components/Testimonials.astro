@@ -1,0 +1,64 @@
+---
+import type { SiteConfig } from '../types/website';
+import { placeholderImage } from '../types/website'; 
+
+interface Props {
+  config: SiteConfig;
+}
+
+const { config } = Astro.props;
+
+const testimonials = [
+  {
+    quote: "Working with this team has been an absolute pleasure. They delivered our project on time and exceeded our expectations.",
+    author: "Sarah Johnson",
+    role: "CEO",
+    company: "TechStart Inc.",
+    image: placeholderImage
+  },
+  {
+    quote: "Their expertise in web development and attention to detail is outstanding. Highly recommend their services!",
+    author: "Michael Chen",
+    role: "CTO",
+    company: "Innovation Labs",
+    image: placeholderImage
+  },
+  {
+    quote: "The team's creative approach and technical skills helped us achieve our goals and improve our online presence.",
+    author: "Emily Rodriguez",
+    role: "Marketing Director",
+    company: "Global Solutions",
+    image: placeholderImage
+  }
+];
+---
+
+<section id="testimonials" class="section section-dark relative bg-black/90">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-black/95"></div>
+    
+  </div>
+
+  <div class="container-custom relative z-10">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {testimonials.map((testimonial) => (
+        <div class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10 hover:bg-primary/20 transition-all duration-300">
+          <div class="flex items-center mb-6">
+            <img
+              src={testimonial.image}
+              alt={testimonial.author}
+              class="w-12 h-12 rounded-full object-cover"
+            />
+            <div class="ml-4">
+              <h3 class="font-heading font-bold text-white">{testimonial.author}</h3>
+              <p class="text-sm text-white/80">{testimonial.role} at {testimonial.company}</p>
+            </div>
+          </div>
+          <blockquote>
+            <p class="text-white/90 italic">"{testimonial.quote}"</p>
+          </blockquote>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

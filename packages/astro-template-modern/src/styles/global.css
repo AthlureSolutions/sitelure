@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Spacing */
+    --section-spacing: 8rem;
+    --component-spacing: 4rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    
+    /* Transitions */
+    --transition-fast: 150ms;
+    --transition-normal: 300ms;
+    --transition-slow: 500ms;
+  }
+
+  body {
+    @apply bg-primary text-white;
+  }
+
+  /* Base link styles */
+  a {
+    @apply transition-colors duration-300;
+  }
+  
+  a:hover {
+    @apply text-action;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 font-medium transition-all duration-300;
+    @apply bg-action text-primary hover:bg-action-dark;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent border-2 border-current hover:border-action;
+  }
+  
+  .btn-white {
+    @apply bg-white text-primary hover:bg-action hover:text-white;
+  }
+
+  .btn-white-outline {
+    @apply bg-transparent border-2 border-white text-white hover:bg-action hover:text-white hover:border-action;
+  }
+
+  .section {
+    @apply py-section;
+  }
+
+  .container-custom {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-dark {
+    @apply bg-black/95;
+  }
+
+  .section-darker {
+    @apply bg-black/70;
+  }
+
+  .card {
+    @apply bg-primary-light p-8 shadow-lg hover:shadow-xl transition-shadow;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+} 
