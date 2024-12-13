@@ -6,21 +6,22 @@ interface Props {
 }
 
 const { config } = Astro.props;
+const { features } = config;
 ---
 
 <section id="features" class="section section-dark">
   <div class="container-custom">
     <div class="text-center max-w-3xl mx-auto mb-16">
       <h2 class="text-4xl font-heading font-bold mb-4 text-white">
-        Why Train With Us
+        {features.title || "Why Train With Us"}
       </h2>
       <p class="text-lg text-gray-200">
-        Experience a fitness journey that transforms both body and mind with our state-of-the-art facilities and expert guidance.
+        {features.subtitle || "Experience a fitness journey that transforms both body and mind with our state-of-the-art facilities and expert guidance."}
       </p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-8">
-      {config.features?.map((feature, index) => (
+      {features.items?.map((feature, index) => (
         <div class={`card relative h-[600px] group overflow-hidden rounded-lg shadow-xl transition-all duration-300 hover:-translate-y-2 ${index === 1 ? 'md:mt-16' : ''}`}>
           <div class="absolute inset-0">
             {feature.image ? (
@@ -30,9 +31,7 @@ const { config } = Astro.props;
                   alt={feature.title}
                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* Dark overlay */}
                 <div class="absolute inset-0 bg-black/85"></div>
-                {/* Micro grid overlay */}
                 <div
                   class="absolute inset-0 opacity-10"
                   style={{
@@ -52,7 +51,7 @@ const { config } = Astro.props;
             <p class="text-white/80 mb-6">{feature.description}</p>
             {feature.link && ( 
               <a href={feature.link} class="btn btn-white-outline inline-block">
-                Learn More
+                {features.learnMoreText || "Learn More"}
               </a>
             )}
           </div>

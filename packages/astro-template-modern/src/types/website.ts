@@ -19,12 +19,24 @@ export interface ThemeConfig {
   };
 }
 
+export interface Link {
+  text: string;
+  href: string;
+}
+
 export interface Feature {
   title: string;
   description: string;
   icon: string;
   image?: string;
   link?: string;
+}
+
+export interface FeaturesSection {
+  title: string;
+  subtitle: string;
+  learnMoreText: string;
+  items: Feature[];
 }
 
 export interface Quote {
@@ -43,6 +55,15 @@ export interface Service {
   quote: Quote;
 }
 
+export interface ServicesSection {
+  title: string;
+  subtitle: string;
+  learnMoreText: string;
+  ctaText: string;
+  ctaLink: string;
+  services: Service[];
+}
+
 export interface Value {
   title: string;
   description: string;
@@ -54,19 +75,27 @@ export interface Stat {
   label: string;
 }
 
+export interface Mission {
+  title: string;
+  description: string;
+}
+
+export interface Story {
+  title: string;
+  content: string;
+  image: string;
+  imageAlt: string;
+}
+
 export interface About {
   title: string;
   subtitle: string;
   heroImage: string;
-  mission: {
-    title: string;
-    description: string;
-  };
-  story: {
-    title: string;
-    content: string;
-    image: string;
-  };
+  ctaText: string;
+  ctaLink: string;
+  quote: string;
+  mission: Mission;
+  story: Story;
   values: Value[];
   stats: Stat[];
 }
@@ -76,6 +105,17 @@ export interface FormField {
   label: string;
   type: string;
   required: boolean;
+  placeholder?: string;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
+}
+
+export interface ContactForm {
+  title: string;
+  submitText: string;
+  fields: FormField[];
 }
 
 export interface Location {
@@ -93,63 +133,60 @@ export interface Contact {
   heroImage: string;
   description: string;
   locations: Location[];
-  form: {
-    title: string;
-    fields: FormField[];
+  form: ContactForm;
+}
+
+export interface BusinessInfo {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+  icon: string;
+}
+
+export interface Footer {
+  businessInfo: BusinessInfo;
+  socialLinks: SocialLink[];
+  quickLinks: Link[];
+}
+
+export interface Hero {
+  headline: string;
+  subheadline: string;
+  backgroundImage?: string;
+  cta: {
+    primary: Link;
+    secondary?: Link;
   };
+}
+
+export interface Navigation {
+  links: Link[];
+}
+
+export interface Logo {
+  src: string;
+  alt: string;
 }
 
 export interface SiteConfig {
   name: string;
   description: string;
   defaultImage?: string;
-  logo?: {
-    src: string;
-    alt: string;
-  };
-  navigation: {
-    links: Array<{
-      text: string;
-      href: string;
-    }>;
-  };
-  hero: {
-    headline: string;
-    subheadline: string;
-    backgroundImage?: string;
-    cta: {
-      primary: {
-        text: string;
-        href: string;
-      };
-      secondary?: {
-        text: string;
-        href: string;
-      };
-    };
-  };
+  logo?: Logo;
+  navigation: Navigation;
+  hero: Hero;
+  features: FeaturesSection;
   quote: Quote;
-  features: Feature[];
-  services: Service[];
+  services: ServicesSection;
   about: About;
   contact: Contact;
-  footer: {
-    businessInfo: {
-      name: string;
-      address: string;
-      phone: string;
-      email: string;
-    };
-    socialLinks: Array<{
-      platform: string;
-      url: string;
-      icon: string;
-    }>;
-    quickLinks: Array<{
-      text: string;
-      href: string;
-    }>;
-  };
+  footer: Footer;
 }
 
 export interface WebsiteData {

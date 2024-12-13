@@ -25,16 +25,15 @@ const { services } = config;
   <div class="container-custom relative z-10">
     <div class="text-center max-w-3xl mx-auto mb-16">
       <h2 class="text-4xl font-heading font-bold text-white mb-4">
-        Our Services
+        {config.services.title}
       </h2>
       <p class="text-lg text-white/80">
-        We offer a comprehensive range of services to help you achieve
-        your fitness goals.
+        {config.services.subtitle}
       </p>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {services.map((service) => (
+      {services.services.map((service) => (
         <a 
           href={`/services/${service.id}`}
           class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10 hover:bg-primary/20 transition-all duration-300 group"
@@ -49,7 +48,7 @@ const { services } = config;
             {service.shortDescription}
           </p>
           <span class="text-action font-medium inline-flex items-center group-hover:translate-x-2 transition-transform">
-            Learn More
+            {config.services.learnMoreText || "Learn More"}
             <i class="fas fa-arrow-right ml-2"></i>
           </span>
         </a>
@@ -57,8 +56,8 @@ const { services } = config;
     </div>
 
     <div class="text-center mt-12">
-      <a href="/contact" class="btn">
-        Get Started
+      <a href={config.services.ctaLink || "/contact"} class="btn">
+        {config.services.ctaText || "Get Started"}
       </a>
     </div>
   </div>
