@@ -13,7 +13,11 @@ dist/
 
 # Generated files
 packages/backend/generated-sites/
-packages/astro-template/public/uploads/
+packages/backend/public/uploads/
+packages/astro-template-modern/public/uploads/
+**/public/uploads/
+**/generated-sites/
+**/temp/
 
 # Prisma
 **/prisma/migrations/

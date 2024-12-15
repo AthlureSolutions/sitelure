@@ -10,7 +10,7 @@ import type { WebsiteData, Service } from '../../types/website';
 
 export async function getStaticPaths() {
   const data = websiteData as WebsiteData;
-  return data.site.services.map((service) => ({
+  return data.site.services.services.map((service) => ({
     params: { id: service.id },
     props: { service },
   }));
@@ -26,7 +26,10 @@ const data = websiteData as WebsiteData;
 // Create a modified site config for this service page
 const serviceConfig = {
   ...data.site,
-  features: service.features
+  features: {
+    ...data.site.features,
+    items: service.features
+  }
 };
 ---
 
