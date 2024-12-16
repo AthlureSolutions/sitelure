@@ -66,14 +66,14 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
         "dark": "${colors?.secondaryDark || adjustColor(colors?.secondary || '#1E40AF', -20)}"
       },
       "accent": {
-        "default": "#759186",
-        "light": "#8AA39B",
-        "dark": "#607F71"
+        "default": "",
+        "light": "",
+        "dark": ""
       },
       "action": {
-        "default": "#FFFF47",
-        "light": "#FFFF7A",
-        "dark": "#CCCC14"
+        "default": "",
+        "light": "",
+        "dark": ""
       }
     },
     "typography": {
@@ -90,9 +90,9 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
       "alt": "${businessInfo.name} Logo"
     },
     "quote": {
-      "text": "A compelling quote about our business",
-      "author": "Business Owner",
-      "role": "Founder & CEO"
+      "text": "",
+      "author": "",
+      "role": ""
     },
     "navigation": {
       "links": [
@@ -131,60 +131,60 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
       "ctaLink": "/contact",
       "services": [
         {
-          "id": "service-1",
-          "title": "Service 1",
-          "shortDescription": "Description of service 1",
-          "icon": "star",
+          "id": "",
+          "title": "",
+          "shortDescription": "",
+          "icon": "",
           "heroImage": "https://freesvg.org/img/Placeholder.png",
           "features": [
             {
-              "title": "Feature 1",
-              "description": "Description of feature 1",
-              "icon": "star",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 2",
-              "description": "Description of feature 2",
-              "icon": "heart",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 3",
-              "description": "Description of feature 3",
-              "icon": "shield",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             }
           ],
           "quote": {
-            "text": "A relevant quote about this service",
-            "author": "Quote Author",
-            "role": "Author's Role"
+            "text": "",
+            "author": "",
+            "role": ""
           }
         },
         {
-          "id": "service-2",
-          "title": "Service 2",
-          "shortDescription": "Description of service 2",
-          "icon": "heart",
+          "id": "",
+          "title": "",
+          "shortDescription": "",
+          "icon": "",
           "heroImage": "https://freesvg.org/img/Placeholder.png",
           "features": [
             {
-              "title": "Feature 1",
-              "description": "Description of feature 1",
-              "icon": "star",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 2",
-              "description": "Description of feature 2",
-              "icon": "heart",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 3",
-              "description": "Description of feature 3",
-              "icon": "shield",
+              "title": "",
+              "description": "",
+              "icon": "",
               "image": "https://freesvg.org/img/Placeholder.png"
             }
           ],
@@ -202,28 +202,28 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
           "heroImage": "https://freesvg.org/img/Placeholder.png",
           "features": [
             {
-              "title": "Feature 1",
-              "description": "Description of feature 1",
+              "title": "",
+              "description": "",
               "icon": "star",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 2",
-              "description": "Description of feature 2",
+              "title": "",
+              "description": "",
               "icon": "heart",
               "image": "https://freesvg.org/img/Placeholder.png"
             },
             {
-              "title": "Feature 3",
-              "description": "Description of feature 3",
+              "title": "",
+              "description": "",
               "icon": "shield",
               "image": "https://freesvg.org/img/Placeholder.png"
             }
           ],
           "quote": {
-            "text": "A relevant quote about this service",
-            "author": "Quote Author",
-            "role": "Author's Role"
+            "text": "",
+            "author": "",
+            "role": ""
           }
         }
       ]
@@ -236,43 +236,43 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
       "ctaLink": "/contact",
       "mission": {
         "title": "Our Mission",
-        "description": "Brief mission statement here"
+        "description": ""
       },
       "story": {
         "title": "Our Story",
-        "content": "IMPORTANT: Write a detailed story about ${businessInfo.name}'s history, values, and journey. This must be at least 100 characters long and should be engaging and professional.",
+        "content": "",
         "image": "https://freesvg.org/img/Placeholder.png",
         "imageAlt": "Our Story"
       },
       "values": [
         {
-          "title": "Value 1",
-          "description": "Value 1 description",
-          "icon": "star"
+          "title": "",
+          "description": "",
+          "icon": ""
         },
         {
-          "title": "Value 2",
-          "description": "Value 2 description",
-          "icon": "heart"
+          "title": "",
+          "description": "",
+          "icon": ""
         },
         {
-          "title": "Value 3",
-          "description": "Value 3 description",
-          "icon": "shield"
+          "title": "",
+          "description": "",
+          "icon": ""
         }
       ],
       "stats": [
         {
-          "value": "100+",
-          "label": "Stat 1"
+          "value": "",
+          "label": ""
         },
         {
-          "value": "50+",
-          "label": "Stat 2"
+          "value": "",
+          "label": ""
         },
         {
-          "value": "10+",
-          "label": "Stat 3"
+          "value": "",
+          "label": ""
         }
       ]
     },
@@ -350,64 +350,6 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
   }
 }
 
-Fill in the empty strings and arrays with engaging, professional content tailored to this business type: ${businessInfo.type || 'service business'}.
-Business description: ${businessInfo.description || 'A professional modern business'}
-
-The following sections need to be filled with content:
-1. Hero section:
-   - headline
-   - subheadline
-
-2. Features section:
-   - title
-   - subtitle
-   - items array (3 compelling features with title, description, icon, image, and link)
-
-3. Services section:
-   - title
-   - subtitle
-   - services array with exactly this structure for each service:
-     {
-       "id": "unique-service-id",
-       "title": "Service Title",
-       "shortDescription": "Brief description of the service",
-       "icon": "icon-name",
-       "heroImage": "https://freesvg.org/img/Placeholder.png",
-       "features": [
-         {
-           "title": "Feature Title",
-           "description": "Feature description",
-           "icon": "feature-icon",
-           "image": "https://freesvg.org/img/Placeholder.png"
-         }
-       ],
-       "quote": {
-         "text": "A relevant quote about this service",
-         "author": "Quote Author",
-         "role": "Author's Role"
-       }
-     }
-   Create 3 services following this exact structure.
-
-4. About section:
-   - title
-   - subtitle
-   - mission description
-   - story section (title is "Our Story", content should be a compelling company story)
-   - values array (3-4 values with title, description, and icon)
-   - stats array (3-4 statistics with value and label)
-
-5. Contact section:
-   - title
-   - subtitle
-   - description
-   - form title
-   - form submitText
-   - location hours
-
-Important: Ensure each service has ALL required fields and follows the exact structure shown above.
-Keep the content professional and aligned with the business description. Do not modify any pre-filled values or structure.
-
 Important notes for content generation:
 1. For all images (except logo), use "https://freesvg.org/img/Placeholder.png"
 2. For icons in values array, use one of these values: star, heart, shield, target, users, chart
@@ -419,28 +361,8 @@ Important notes for content generation:
 
 Keep the content professional and aligned with the business description. Do not modify any pre-filled values or structure.`;
 
-  const systemPrompt = `You are a professional web content creator. Your task is to generate website content that EXACTLY matches this structure:
+  const systemPrompt = `You are a professional web content creator. Your task is to generate website content that aligns with ${businessInfo.description}
 
-{
-  "theme": { ... },
-  "site": {
-    "name": "Business Name",
-    "description": "Business Description",
-    "quote": {
-      "text": "A compelling quote about the business",
-      "author": "Quote Author",
-      "role": "Author Role"
-    },
-    "about": {
-      "story": {
-        "title": "Our Story",
-        "content": "A detailed story about the company's history, values, and journey. This must be at least 100 characters long.",
-        "image": "https://freesvg.org/img/Placeholder.png",
-        "imageAlt": "Our Story"
-      }
-    }
-  }
-}
 
 CRITICAL REQUIREMENTS:
 1. The site MUST have a quote section with text, author, and role
@@ -458,7 +380,7 @@ CRITICAL REQUIREMENTS:
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
@@ -467,55 +389,9 @@ CRITICAL REQUIREMENTS:
         {
           role: "user",
           content: prompt
-        },
-        {
-          role: "system",
-          content: `IMPORTANT: The services array MUST contain EXACTLY 3 services with this structure:
-[
-  {
-    "id": "service-1",
-    "title": "First Service",
-    "shortDescription": "Description here",
-    "icon": "star",
-    "heroImage": "https://freesvg.org/img/Placeholder.png",
-    "features": [
-      {
-        "title": "Feature 1",
-        "description": "Feature description",
-        "icon": "star",
-        "image": "https://freesvg.org/img/Placeholder.png"
-      },
-      {
-        "title": "Feature 2",
-        "description": "Feature description",
-        "icon": "heart",
-        "image": "https://freesvg.org/img/Placeholder.png"
-      },
-      {
-        "title": "Feature 3",
-        "description": "Feature description",
-        "icon": "shield",
-        "image": "https://freesvg.org/img/Placeholder.png"
-      }
-    ],
-    "quote": {
-      "text": "Quote text",
-      "author": "Author Name",
-      "role": "Author Role"
-    }
-  },
-  {
-    "id": "service-2",
-    // ... same structure as above
-  },
-  {
-    "id": "service-3",
-    // ... same structure as above
-  }
-]`
         }
       ],
-      temperature: 0.5, // Lower temperature for more consistent output
+      temperature: 0.3, // Lower temperature for more consistent output
       response_format: { type: "json_object" }
     });
 
