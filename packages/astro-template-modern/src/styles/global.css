@@ -36,7 +36,7 @@
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center px-6 py-3 font-medium transition-all duration-300;
-    @apply bg-primary text-primary hover:bg-primary/80;
+    @apply bg-primary text-white hover:bg-primary;
   }
   
   .btn-outline {
