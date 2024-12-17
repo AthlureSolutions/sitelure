@@ -1,0 +1,29 @@
+---
+import type { Mission } from '../types/website';
+
+interface Props {
+  mission: Mission;
+}
+
+const { mission } = Astro.props;
+---
+
+<section class="section section-dark relative">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-black/85"></div>
+    <div
+      class="absolute inset-0 opacity-5"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)`,
+        backgroundSize: '5px 5px'
+      }}
+    ></div>
+  </div>
+  <div class="container-custom relative z-10">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-heading font-bold text-white mb-6">{mission.title}</h2>
+      <p class="text-xl text-white/80">{mission.description}</p>
+    </div>
+  </div>
+</section> 

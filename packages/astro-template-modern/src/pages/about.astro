@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Mission from '../components/Mission.astro';
+import Story from '../components/Story.astro';
+import Values from '../components/Values.astro';
+import Stats from '../components/Stats.astro';
+import websiteData from '../data/websiteData.json';
+import type { WebsiteData } from '../types/website';
+
+const data = websiteData as unknown as WebsiteData;
+const { site, pages } = data;
+const { about } = pages;
+---
+
+<BaseLayout title={`About - ${site.name}`} description={about.hero.subheadline}>
+  <main>
+    <PageHero
+      title={about.hero.headline}
+      description={about.hero.subheadline}
+      backgroundImage={about.hero.backgroundImage}
+    />
+    <Mission mission={about.mission} />
+    <Story story={about.story} />
+    <Values values={about.values} />
+    <Stats stats={about.stats} />
+  </main>
+</BaseLayout>

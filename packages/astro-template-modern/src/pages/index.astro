@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Services from '../components/Services.astro';
+import Quote from '../components/Quote.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Contact from '../components/Contact.astro';
+import websiteData from '../data/websiteData.json';
+import type { WebsiteData } from '../types/website';
+
+const data = websiteData as unknown as WebsiteData;
+const { pages } = data;
+const { home } = pages;
+---
+
+<BaseLayout>
+  <main>
+    <Hero hero={home.hero} />
+    <Features features={home.features} />
+    <Services services={home.services} />
+    <Quote quote={home.quote} />
+    <Testimonials testimonials={home.testimonials} />
+    <Contact contact={pages.contact} />
+  </main>
+</BaseLayout>

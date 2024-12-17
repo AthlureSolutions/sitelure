@@ -9,9 +9,7 @@ interface SocialMediaAndTemplateFormProps {
 }
 
 const availableTemplates = [
-  { name: 'Astro Template A', description: 'Modern and sleek design.' },
-  { name: 'Astro Template B', description: 'Minimalist and clean layout.' },
-  { name: 'Astro Template C', description: 'Vibrant and colorful interface.' },
+  { name: 'Modern Business Template', description: 'A professional, modern business website template with clean design and optimized user experience.' },
 ];
 
 const SocialMediaAndTemplateForm: React.FC<SocialMediaAndTemplateFormProps> = ({ nextStep, prevStep }) => {
@@ -160,8 +158,8 @@ const SocialMediaAndTemplateForm: React.FC<SocialMediaAndTemplateFormProps> = ({
 
       {/* Template Selection */}
       <div className="glass p-6 rounded-lg">
-        <h3 className="text-lg font-semibold text-white mb-4">Select Template</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Template</h3>
+        <div className="grid grid-cols-1 gap-6">
           {availableTemplates.map((template) => (
             <div
               key={template.name}

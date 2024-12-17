@@ -5,6 +5,8 @@ node_modules/
 generated-sites/
 dist/
 build/
+public/uploads/
+temp/
 
 # Prisma
 prisma/migrations/

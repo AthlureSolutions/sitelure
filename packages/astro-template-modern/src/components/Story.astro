@@ -1,0 +1,33 @@
+---
+import type { StorySection } from '../types/website';
+
+interface Props {
+  story: StorySection;
+}
+
+const { story } = Astro.props;
+---
+
+<section class="section section-dark relative">
+  <div class="absolute inset-0 bg-black/90"></div>
+  <div class="container-custom relative z-10">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-3xl font-heading font-bold text-white mb-6">{story.title}</h2>
+        <p class="text-white/80">{story.content}</p>
+        {story.quote && (
+          <blockquote class="mt-6 border-l-4 border-action pl-4 italic text-white/90">
+            {story.quote}
+          </blockquote>
+        )}
+      </div>
+      <div>
+        <img
+          src={story.image}
+          alt={story.imageAlt}
+          class="w-full h-full object-cover rounded-lg shadow-xl"
+        />
+      </div>
+    </div>
+  </div>
+</section> 

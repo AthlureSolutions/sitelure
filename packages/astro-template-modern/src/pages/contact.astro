@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm.astro';
+import LocationsList from '../components/LocationsList.astro';
+import websiteData from '../data/websiteData.json';
+import type { WebsiteData } from '../types/website';
+
+const data = websiteData as unknown as WebsiteData;
+const { site, pages } = data;
+const { contact } = pages;
+---
+
+<BaseLayout title={`Contact - ${site.name}`} description={contact.hero.subheadline}>
+  <main>
+    <PageHero
+      title={contact.hero.headline}
+      description={contact.hero.subheadline}
+      backgroundImage={contact.hero.backgroundImage}
+    />
+    <section class="section section-dark relative">
+      <div class="container-custom relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12">
+          <LocationsList locations={contact.locations} />
+          <ContactForm form={contact.form} />
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout> 

@@ -1,0 +1,53 @@
+---
+import type { TestimonialsSection } from '../types/website';
+import { placeholderImage } from '../types/website';
+
+interface Props {
+  testimonials: TestimonialsSection;
+}
+
+const { testimonials } = Astro.props;
+
+// Check if section should be shown
+const showTestimonials = testimonials?.items?.length > 0;
+---
+
+{showTestimonials && (
+  <section id="testimonials" class="section section-dark relative bg-black/90">
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-black/95"></div>
+    </div>
+
+    <div class="container-custom relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl font-heading font-bold text-white mb-4">
+          {testimonials.title}
+        </h2>
+        <p class="text-lg text-white/80">
+          {testimonials.subtitle}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {testimonials.items.map((testimonial) => (
+          <div class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10 hover:bg-primary/20 transition-all duration-300">
+            <div class="flex items-center mb-6">
+              <img
+                src={testimonial.image || placeholderImage}
+                alt={testimonial.author}
+                class="w-12 h-12 rounded-full object-cover"
+              />
+              <div class="ml-4">
+                <h3 class="font-heading font-bold text-white">{testimonial.author}</h3>
+                <p class="text-sm text-white/80">{testimonial.role} at {testimonial.company}</p>
+              </div>
+            </div>
+            <blockquote>
+              <p class="text-white/90 italic">"{testimonial.quote}"</p>
+            </blockquote>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

@@ -1,0 +1,105 @@
+---
+import type { SiteConfig } from '../types/website';
+import NewsletterForm from './NewsletterForm';
+
+interface Props {
+  config: SiteConfig;
+}
+
+const { config } = Astro.props;
+const { footer, name } = config;
+---
+
+<footer class="bg-black text-white pt-20 pb-10">
+  <div class="container-custom">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <!-- Business Info -->
+      <div>
+        <h3 class="text-xl font-heading font-semibold mb-4">{footer.businessInfo.name}</h3>
+        <address class="not-italic mb-4 text-white/80">
+          {footer.businessInfo.address}
+        </address>
+        <div class="space-y-2 text-white/80">
+          <p>
+            <a href={`tel:${footer.businessInfo.phone}`} class="hover:text-accent transition-colors">
+              {footer.businessInfo.phone}
+            </a>
+          </p>
+          <p>
+            <a href={`mailto:${footer.businessInfo.email}`} class="hover:text-accent transition-colors">
+              {footer.businessInfo.email}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-xl font-heading font-semibold mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          {footer.quickLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-white/80 hover:text-accent transition-colors"
+              >
+                {link.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div>
+        <h3 class="text-xl font-heading font-semibold mb-4">Connect With Us</h3>
+        <div class="flex space-x-4">
+          {footer.socialLinks.map((social) => (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-white/80 hover:text-accent transition-colors"
+              aria-label={`Follow us on ${social.platform}`}
+            >
+              <span class="sr-only">Follow us on {social.platform}</span>
+              <i class={`fab fa-${social.icon} text-2xl`}></i>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <h3 class="text-xl font-heading font-semibold mb-4">Stay Updated</h3>
+        <p class="text-white/80 mb-4">
+          Subscribe to our newsletter for the latest updates and offers.
+        </p>
+        <NewsletterForm client:load />
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="mt-16 pt-8 border-t border-white/10">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-white/60 text-sm">
+          &copy; {new Date().getFullYear()} {name}. All rights reserved.
+        </p>
+        <div class="mt-4 md:mt-0">
+          <ul class="flex space-x-6 text-sm text-white/60">
+            <li>
+              <a href="/privacy" class="hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="/terms" class="hover:text-white transition-colors">
+                Terms of Service
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer> 

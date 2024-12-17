@@ -19,7 +19,9 @@
   ],
   "packageManager": "npm@10.8.1",
   "dependencies": {
+    "@astrojs/image": "^0.18.0",
     "@heroicons/react": "^2.2.0",
-    "framer-motion": "^11.12.0"
+    "framer-motion": "^11.12.0",
+    "sharp": "^0.33.5"
   }
 }

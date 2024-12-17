@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  title?: string;
+  description?: string;
+  backgroundImage?: string;
+  alignment?: 'left' | 'center';
+}
+
+const { 
+  title, 
+  description, 
+  backgroundImage = 'https://freesvg.org/img/Placeholder.png',
+  alignment = 'center'
+} = Astro.props;
+
+const alignmentClasses = {
+  left: 'text-left',
+  center: 'text-center mx-auto'
+};
+---
+
+<section class="relative py-24 md:py-32 overflow-hidden">
+  {/* Background Image */}
+  <div class="absolute inset-0 z-0">
+    <Image
+      src={backgroundImage}
+      alt=""
+      width={1920}
+      height={1080}
+      class="w-full h-full object-cover"
+    />
+    {/* Dark overlay */}
+    <div class="absolute inset-0 bg-black/95"></div>
+    
+    {/* Micro grid overlay */}
+    <div
+      class="absolute inset-0 opacity-10"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+        backgroundSize: '5px 5px'
+      }}
+    ></div>
+  </div>
+
+  {/* Content */}
+  <div class="container-custom relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h1 class="text-5xl md:text-6xl font-heading font-bold text-white mb-6 animate-[slideUp_0.5s_ease-out]">
+          {title}
+        </h1>
+        {description && (
+          <p class="text-xl md:text-2xl text-white/90 animate-[slideUp_0.5s_ease-out_0.2s] opacity-0 [animation-fill-mode:forwards]">
+            {description}
+          </p>
+        )}
+        <slot />
+      </div>
+      <div class="hidden md:block">
+        <Image
+          src={backgroundImage}
+          alt=""
+          width={800}
+          height={600}
+          class="w-full h-full object-cover rounded-lg shadow-xl"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

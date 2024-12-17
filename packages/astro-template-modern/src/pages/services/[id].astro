@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Features from '../../components/Features.astro';
+import Quote from '../../components/Quote.astro';
+import websiteData from '../../data/websiteData.json';
+import type { WebsiteData } from '../../types/website';
+
+export async function getStaticPaths() {
+  const data = websiteData as unknown as WebsiteData;
+  const serviceIds = data.pages.home.services.items.map(service => ({
+    params: { id: service.id },
+    props: { 
+      serviceId: service.id,
+      data: data
+    }
+  }));
+  return serviceIds;
+}
+
+const { serviceId, data } = Astro.props;
+const servicePage = data.pages.servicePages?.[serviceId] || {};
+const homeService = data.pages.home.services.items.find(s => s.id === serviceId);
+
+if (!homeService) {
+  throw new Error(`Service not found for ID: ${serviceId}`);
+}
+
+// Combine data from home service and service page with fallbacks
+const service = {
+  ...homeService,
+  hero: {
+    headline: servicePage.hero?.headline || homeService.title || 'Our Service',
+    subheadline: servicePage.hero?.subheadline || homeService.shortDescription || 'Learn more about our service',
+    backgroundImage: servicePage.hero?.backgroundImage || 'https://freesvg.org/img/Placeholder.png'
+  },
+  features: {
+    title: servicePage.features?.title || 'Features',
+    subtitle: servicePage.features?.subtitle || 'What we offer',
+    items: servicePage.features?.items || homeService.features || []
+  },
+  quote: servicePage.quote || null
+};
+---
+
+<BaseLayout title={`${service.title} - ${data.site.name}`} description={service.shortDescription}>
+  <main>
+    <PageHero
+      title={service.hero.headline}
+      description={service.hero.subheadline}
+      backgroundImage={service.hero.backgroundImage}
+    />
+    {service.features.items?.length > 0 && <Features features={service.features} />}
+    {service.quote && <Quote quote={service.quote} />}
+  </main>
+</BaseLayout> 

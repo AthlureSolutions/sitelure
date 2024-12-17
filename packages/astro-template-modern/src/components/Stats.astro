@@ -1,0 +1,37 @@
+---
+import type { StatsSection } from '../types/website';
+
+interface Props {
+  stats: StatsSection;
+}
+
+const { stats } = Astro.props;
+---
+
+<section class="section section-dark relative">
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-black/95"></div>
+    <div
+      class="absolute inset-0 opacity-5"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)`,
+        backgroundSize: '5px 5px'
+      }}
+    ></div>
+  </div>
+  <div class="container-custom relative z-10">
+    <h2 class="text-3xl font-heading font-bold text-white text-center mb-4">{stats.title}</h2>
+    {stats.subtitle && (
+      <p class="text-xl text-white/80 text-center mb-12">{stats.subtitle}</p>
+    )}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {stats.items.map((stat) => (
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-bold text-action mb-2">{stat.value}</div>
+          <div class="text-white/80">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section> 

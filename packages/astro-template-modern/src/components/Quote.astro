@@ -1,0 +1,37 @@
+---
+import type { Quote } from '../types/website';
+
+interface Props {
+  quote?: Quote
+}
+
+const { quote } = Astro.props;
+
+// Check if quote should be shown
+const showQuote = quote && quote.author;
+---
+
+{showQuote && (
+  <section class="section section-darker">
+    <div class="container-custom">
+      <div class="max-w-4xl mx-auto text-center">
+        <blockquote>
+          <p class="text-3xl text-white mb-8 italic">"{quote.text}"</p>
+            {quote.author && (
+            <footer class="text-white/80">
+              <cite class="not-italic">
+                <span class="font-medium">{quote.author}</span>
+                {quote.role && (
+                  <>
+                    <span class="mx-2">|</span>
+                    <span class="opacity-75">{quote.role}</span>
+                  </>
+                )}
+              </cite>
+            </footer>
+          )}
+        </blockquote>
+      </div>
+    </div>
+  </section>
+)} 

@@ -1,0 +1,98 @@
+---
+import type { WebsiteData } from '../types/website';
+import { placeholderImage } from '../types/website';
+import MobileMenu from './MobileMenu';
+
+interface Props {
+  config: WebsiteData['site'];
+  services?: WebsiteData['pages']['home']['services']['items'];
+}
+
+const { config, services = [] } = Astro.props;
+const { navigation, logo, name } = config;
+const logoSrc = logo?.src?.startsWith('/uploads/') 
+  ? `/uploads/${logo.src.split('/uploads/')[1]}`  // Keep only the filename part
+  : (logo?.src || placeholderImage);
+const logoAlt = logo?.alt || name;
+---
+
+<header class="fixed w-full z-50 transition-all duration-300" id="header">
+  <div class="container-custom">
+    <nav class="flex items-center justify-between h-20">
+      <a href="/" class="flex items-center space-x-2">
+        <img src={logoSrc} alt={logoAlt} class="h-10 w-auto object-contain" />
+      </a>
+
+      <div class="hidden md:flex items-center space-x-8">
+        {navigation.links.map((link) => {
+          if (link.text === "Services") {
+            return (
+              <div class="relative group">
+                <button class="text-white hover:text-action-dark transition-colors duration-300 flex items-center">
+                  Services
+                  <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div class="absolute left-0 mt-2 w-96 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 border border-gray-100">
+                  {services.map((service) => (
+                    <a
+                      href={`/services/${service.id}`}
+                      class="block px-6 py-3 text-gray-900 hover:bg-action-dark transition-colors duration-300 border-b border-gray-100 last:border-b-0"
+                    >
+                      <div class="flex items-center">
+                        <i class={`fas fa-${service.icon} w-5 mr-3 text-gray-400`}></i>
+                        <div>
+                          <div class="font-medium text-gray-900">{service.title}</div>
+                          <div class="text-sm text-gray-500 mt-0.5">{service.shortDescription}</div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          return (
+            <a
+              href={link.href}
+              class="text-white hover:text-action-dark transition-colors duration-300"
+            >
+              {link.text}
+            </a>
+          );
+        })}
+        <a
+          href="/contact"
+          class="btn"
+        >
+          Get Started
+        </a>
+      </div>
+
+      <div class="md:hidden">
+        <MobileMenu client:load navigation={navigation} services={services} />
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('header');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header?.classList.add('bg-black/95', 'backdrop-blur-lg', 'border-b', 'border-white/10');
+      header?.querySelectorAll('a:not(.btn), button').forEach(link => {
+        link.classList.remove('text-white', 'hover:text-white/80');
+        link.classList.add('text-white', 'hover:text-action-dark');
+      });
+    } else {
+      header?.classList.remove('bg-black/95', 'backdrop-blur-lg', 'border-b', 'border-white/10');
+      header?.querySelectorAll('a:not(.btn), button').forEach(link => {
+        link.classList.remove('text-white', 'hover:text-action-dark');
+        link.classList.add('text-white', 'hover:text-white/80');
+      });
+    }
+  });
+</script>
