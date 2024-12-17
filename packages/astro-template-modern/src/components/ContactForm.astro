@@ -1,0 +1,51 @@
+---
+interface FormField {
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'textarea';
+  required?: boolean;
+}
+
+interface ContactForm {
+  title: string;
+  fields: FormField[];
+  submitText?: string;
+}
+
+interface Props {
+  form: ContactForm;
+}
+
+const { form } = Astro.props;
+---
+
+<div class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10">
+  <h2 class="text-3xl font-heading font-bold text-white mb-8">{form.title}</h2>
+  <form class="space-y-6" name="contact" method="POST" data-netlify="true">
+    {form.fields.map((field) => (
+      <div>
+        <label for={field.name} class="block text-white mb-2">{field.label}</label>
+        {field.type === 'textarea' ? (
+          <textarea
+            id={field.name}
+            name={field.name}
+            required={field.required}
+            rows="4"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-action"
+          ></textarea>
+        ) : (
+          <input
+            type={field.type}
+            id={field.name}
+            name={field.name}
+            required={field.required}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-action"
+          />
+        )}
+      </div>
+    ))}
+    <button type="submit" class="btn w-full">
+      {form.submitText || 'Send Message'}
+    </button>
+  </form>
+</div> 

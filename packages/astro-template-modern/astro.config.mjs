@@ -7,11 +7,11 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    react(),
+    react()
   ],
   vite: {
     ssr: {
       noExternal: ['@sitelure/*'],
     },
-  },
+  }
 }); 

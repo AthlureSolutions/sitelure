@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   backgroundImage?: string;
   alignment?: 'left' | 'center';
@@ -20,23 +22,19 @@ const alignmentClasses = {
 ---
 
 <section class="relative py-24 md:py-32 overflow-hidden">
-  <!-- Background Image with Parallax -->
-  <div 
-    class="absolute inset-0 z-0"
-    style={{
-      transform: "translateY(var(--parallax-offset, 0))",
-      transition: "transform 0.1s ease-out",
-    }}
-  >
-    <img
+  {/* Background Image */}
+  <div class="absolute inset-0 z-0">
+    <Image
       src={backgroundImage}
       alt=""
-      class="w-full h-[120%] object-cover"
+      width={1920}
+      height={1080}
+      class="w-full h-full object-cover"
     />
-    <!-- Dark overlay -->
+    {/* Dark overlay */}
     <div class="absolute inset-0 bg-black/95"></div>
     
-    <!-- Micro grid overlay -->
+    {/* Micro grid overlay */}
     <div
       class="absolute inset-0 opacity-10"
       style={{
@@ -47,7 +45,7 @@ const alignmentClasses = {
     ></div>
   </div>
 
-  <!-- Content -->
+  {/* Content */}
   <div class="container-custom relative z-10">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div>
@@ -62,20 +60,27 @@ const alignmentClasses = {
         <slot />
       </div>
       <div class="hidden md:block">
-        <img
+        <Image
           src={backgroundImage}
           alt=""
+          width={800}
+          height={600}
           class="w-full h-full object-cover rounded-lg shadow-xl"
         />
       </div>
     </div>
   </div>
-
-  <script>
-    // Add parallax effect
-    window.addEventListener('scroll', () => {
-      const offset = window.scrollY * 0.5;
-      document.documentElement.style.setProperty('--parallax-offset', `${offset}px`);
-    });
-  </script>
 </section>
+
+<style>
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

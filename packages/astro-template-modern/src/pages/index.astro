@@ -1,36 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
-import About from '../components/About.astro';
 import Services from '../components/Services.astro';
+import Quote from '../components/Quote.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Contact from '../components/Contact.astro';
-import Footer from '../components/Footer.astro';
-import Quote from '../components/Quote.astro';
 import websiteData from '../data/websiteData.json';
 import type { WebsiteData } from '../types/website';
 
-const data = websiteData as WebsiteData;
-const { name, description } = data.site;
+const data = websiteData as unknown as WebsiteData;
+const { pages } = data;
+const { home } = pages;
 ---
 
-<BaseLayout title={name} description={description}>
-  <Header config={data.site} />
+<BaseLayout>
   <main>
-    <Hero config={data.site} />
-    <Quote 
-    quote={data.site.quote.text}
-    author={data.site.quote.author}
-    role={data.site.quote.role}
-  />
-    <Features config={data.site} />
-   
-    <About config={data.site} />
-    <Services config={data.site} />
-    <Testimonials config={data.site} />
-    <Contact config={data.site} />
+    <Hero hero={home.hero} />
+    <Features features={home.features} />
+    <Services services={home.services} />
+    <Quote quote={home.quote} />
+    <Testimonials testimonials={home.testimonials} />
+    <Contact contact={pages.contact} />
   </main>
-  <Footer config={data.site} />
-</BaseLayout> 
+</BaseLayout>

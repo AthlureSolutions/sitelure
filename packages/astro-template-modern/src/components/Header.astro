@@ -1,14 +1,15 @@
 ---
-import type { SiteConfig } from '../types/website';
+import type { WebsiteData } from '../types/website';
 import { placeholderImage } from '../types/website';
 import MobileMenu from './MobileMenu';
 
 interface Props {
-  config: SiteConfig;
+  config: WebsiteData['site'];
+  services?: WebsiteData['pages']['home']['services']['items'];
 }
 
-const { config } = Astro.props;
-const { navigation, logo, name, services } = config;
+const { config, services = [] } = Astro.props;
+const { navigation, logo, name } = config;
 const logoSrc = logo?.src?.startsWith('/uploads/') 
   ? `/uploads/${logo.src.split('/uploads/')[1]}`  // Keep only the filename part
   : (logo?.src || placeholderImage);
@@ -34,7 +35,7 @@ const logoAlt = logo?.alt || name;
                   </svg>
                 </button>
                 <div class="absolute left-0 mt-2 w-96 bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 border border-gray-100">
-                  {services.services.map((service) => (
+                  {services.map((service) => (
                     <a
                       href={`/services/${service.id}`}
                       class="block px-6 py-3 text-gray-900 hover:bg-action-dark transition-colors duration-300 border-b border-gray-100 last:border-b-0"
@@ -70,7 +71,7 @@ const logoAlt = logo?.alt || name;
       </div>
 
       <div class="md:hidden">
-        <MobileMenu client:load navigation={navigation} services={services.services} />
+        <MobileMenu client:load navigation={navigation} services={services} />
       </div>
     </nav>
   </div>

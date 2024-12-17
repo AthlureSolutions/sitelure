@@ -1,5 +1,6 @@
 export const placeholderImage = "https://freesvg.org/img/Placeholder.png";
 
+// Theme and Styling
 export interface ColorSet {
   default: string;
   light: string;
@@ -13,15 +14,56 @@ export interface ThemeConfig {
     accent: ColorSet;
     action: ColorSet;
   };
-  typography: {
-    heading: string;
-    body: string;
-  };
 }
 
+export interface Typography {
+  heading: string;
+  body: string;
+}
+
+// Common Components
 export interface Link {
   text: string;
   href: string;
+}
+
+export interface Logo {
+  src: string;
+  alt: string;
+}
+
+export interface Navigation {
+  links: Link[];
+}
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+  icon: string;
+}
+
+export interface BusinessInfo {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
+
+export interface Footer {
+  businessInfo: BusinessInfo;
+  socialLinks: SocialLink[];
+  quickLinks: Link[];
+}
+
+// Section Types
+export interface HeroSection {
+  headline: string;
+  subheadline: string;
+  backgroundImage?: string;
+  cta: {
+    primary: Link;
+    secondary?: Link;
+  };
 }
 
 export interface Feature {
@@ -33,15 +75,15 @@ export interface Feature {
 }
 
 export interface FeaturesSection {
-  title: string;
-  subtitle: string;
-  learnMoreText: string;
+  title?: string;
+  subtitle?: string;
+  learnMoreText?: string;
   items: Feature[];
 }
 
 export interface Quote {
   text: string;
-  author?: string;
+  author: string;
   role?: string;
 }
 
@@ -61,7 +103,7 @@ export interface ServicesSection {
   learnMoreText: string;
   ctaText: string;
   ctaLink: string;
-  services: Service[];
+  items: Service[];
 }
 
 export interface Value {
@@ -75,47 +117,43 @@ export interface Stat {
   label: string;
 }
 
+export interface StorySection {
+  title: string;
+  content: string;
+  image: string;
+  imageAlt: string;
+  quote?: string;
+}
+
+export interface ValuesSection {
+  title: string;
+  subtitle: string;
+  items: Value[];
+}
+
+export interface StatsSection {
+  title: string;
+  subtitle: string;
+  items: Stat[];
+}
+
 export interface Mission {
   title: string;
   description: string;
 }
 
-export interface Story {
-  title: string;
-  content: string;
-  image: string;
-  imageAlt: string;
-}
-
-export interface About {
-  title: string;
-  subtitle: string;
-  heroImage: string;
-  ctaText: string;
-  ctaLink: string;
-  quote: string;
-  mission: Mission;
-  story: Story;
-  values: Value[];
-  stats: Stat[];
-}
-
 export interface FormField {
   name: string;
   label: string;
-  type: string;
-  required: boolean;
+  type: 'text' | 'email' | 'textarea';
+  required?: boolean;
   placeholder?: string;
-  options?: Array<{
-    value: string;
-    label: string;
-  }>;
 }
 
 export interface ContactForm {
   title: string;
-  submitText: string;
   fields: FormField[];
+  submitText?: string;
 }
 
 export interface Location {
@@ -124,72 +162,87 @@ export interface Location {
   phone: string;
   email: string;
   hours: string;
-  mapEmbed: string;
+  mapEmbed?: string;
 }
 
-export interface Contact {
+export interface LocationsSection {
+  title: string;
+  subtitle?: string;
+  items: Location[];
+}
+
+export interface Testimonial {
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  image: string;
+}
+
+export interface TestimonialsSection {
   title: string;
   subtitle: string;
-  heroImage: string;
-  description: string;
-  locations: Location[];
+  items: Testimonial[];
+}
+
+// Page Types
+export interface HomePage {
+  hero: HeroSection;
+  quote: Quote;
+  features: FeaturesSection;
+  services: ServicesSection;
+  testimonials: TestimonialsSection;
+}
+
+export interface AboutPage {
+  hero: HeroSection;
+  mission: Mission;
+  story: StorySection;
+  values: ValuesSection;
+  stats: StatsSection;
+}
+
+export interface ServicesPage {
+  hero: HeroSection;
+  services: ServicesSection;
+}
+
+export interface ServicePage {
+  hero: HeroSection;
+  features: FeaturesSection;
+  quote: Quote;
+}
+
+export interface ContactPage {
+  hero: HeroSection;
   form: ContactForm;
+  locations: Location[];
 }
 
-export interface BusinessInfo {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-}
-
-export interface SocialLink {
-  platform: string;
-  url: string;
-  icon: string;
-}
-
-export interface Footer {
-  businessInfo: BusinessInfo;
-  socialLinks: SocialLink[];
-  quickLinks: Link[];
-}
-
-export interface Hero {
-  headline: string;
-  subheadline: string;
-  backgroundImage?: string;
-  cta: {
-    primary: Link;
-    secondary?: Link;
-  };
-}
-
-export interface Navigation {
-  links: Link[];
-}
-
-export interface Logo {
-  src: string;
-  alt: string;
-}
-
+// Site Configuration
 export interface SiteConfig {
   name: string;
   description: string;
   defaultImage?: string;
   logo?: Logo;
+  branding: {
+    theme: ThemeConfig;
+    typography: Typography;
+  };
   navigation: Navigation;
-  hero: Hero;
-  features: FeaturesSection;
-  quote: Quote;
-  services: ServicesSection;
-  about: About;
-  contact: Contact;
   footer: Footer;
 }
 
+// Main Website Data Structure
 export interface WebsiteData {
-  theme: ThemeConfig;
   site: SiteConfig;
+  pages: {
+    home: HomePage;
+    about: AboutPage;
+    services: ServicesPage;
+    servicePages: {
+      [id: string]: ServicePage;
+    };
+    contact: ContactPage;
+  };
 } 

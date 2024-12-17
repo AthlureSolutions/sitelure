@@ -1,11 +1,16 @@
 ---
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import websiteData from '../data/websiteData.json';
 import type { WebsiteData } from '../types/website';
 import { placeholderImage } from '../types/website';
 
-const data = websiteData as WebsiteData;
-const { theme } = data;
+const data = websiteData as unknown as WebsiteData;
+const { site } = data;
+const { branding } = site;
+const { theme, typography } = branding;
+const services = data.pages.home.services.items;
 
 interface Props {
   title?: string;
@@ -14,9 +19,9 @@ interface Props {
 }
 
 const {
-  title = data.site.name,
-  description = data.site.description,
-  image = data.site.defaultImage || placeholderImage,
+  title = site.name,
+  description = site.description,
+  image = site.defaultImage || placeholderImage,
 } = Astro.props;
 ---
 
@@ -63,12 +68,14 @@ const {
       'color-action': theme.colors.action.default,
       'color-action-light': theme.colors.action.light,
       'color-action-dark': theme.colors.action.dark,
-      'font-heading': theme.typography.heading,
-      'font-body': theme.typography.body,
+      'font-heading': typography?.heading,
+      'font-body': typography?.body
     }}>
     </style>
   </head>
   <body class="font-body bg-white text-primary">
+    <Header config={site} services={services} />
     <slot />
+    <Footer config={site} />
   </body>
 </html> 

@@ -1,58 +1,56 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
 import PageHero from '../../components/PageHero.astro';
 import Features from '../../components/Features.astro';
 import Quote from '../../components/Quote.astro';
-import Footer from '../../components/Footer.astro';
 import websiteData from '../../data/websiteData.json';
-import type { WebsiteData, Service } from '../../types/website';
+import type { WebsiteData } from '../../types/website';
 
 export async function getStaticPaths() {
-  const data = websiteData as WebsiteData;
-  return data.site.services.services.map((service) => ({
+  const data = websiteData as unknown as WebsiteData;
+  const serviceIds = data.pages.home.services.items.map(service => ({
     params: { id: service.id },
-    props: { service },
+    props: { 
+      serviceId: service.id,
+      data: data
+    }
   }));
+  return serviceIds;
 }
 
-interface Props {
-  service: Service;
+const { serviceId, data } = Astro.props;
+const servicePage = data.pages.servicePages?.[serviceId] || {};
+const homeService = data.pages.home.services.items.find(s => s.id === serviceId);
+
+if (!homeService) {
+  throw new Error(`Service not found for ID: ${serviceId}`);
 }
 
-const { service } = Astro.props;
-const data = websiteData as WebsiteData;
-
-// Create a modified site config for this service page
-const serviceConfig = {
-  ...data.site,
+// Combine data from home service and service page with fallbacks
+const service = {
+  ...homeService,
+  hero: {
+    headline: servicePage.hero?.headline || homeService.title || 'Our Service',
+    subheadline: servicePage.hero?.subheadline || homeService.shortDescription || 'Learn more about our service',
+    backgroundImage: servicePage.hero?.backgroundImage || 'https://freesvg.org/img/Placeholder.png'
+  },
   features: {
-    ...data.site.features,
-    items: service.features
-  }
+    title: servicePage.features?.title || 'Features',
+    subtitle: servicePage.features?.subtitle || 'What we offer',
+    items: servicePage.features?.items || homeService.features || []
+  },
+  quote: servicePage.quote || null
 };
 ---
 
 <BaseLayout title={`${service.title} - ${data.site.name}`} description={service.shortDescription}>
-  <Header config={data.site} />
   <main>
     <PageHero
-      title={service.title}
-      description={service.shortDescription}
-      backgroundImage={service.heroImage}
-    >
-      <div class="flex flex-wrap gap-4 mt-8 animate-[slideUp_0.5s_ease-out_0.4s] opacity-0 [animation-fill-mode:forwards]">
-        <a href="/contact" class="btn text-lg px-8 py-4">
-          Get Started
-        </a>
-      </div>
-    </PageHero>
-    <Features config={serviceConfig} />
-    <Quote 
-      quote={service.quote.text}
-      author={service.quote.author}
-      role={service.quote.role}
+      title={service.hero.headline}
+      description={service.hero.subheadline}
+      backgroundImage={service.hero.backgroundImage}
     />
+    {service.features.items?.length > 0 && <Features features={service.features} />}
+    {service.quote && <Quote quote={service.quote} />}
   </main>
-  <Footer config={data.site} />
 </BaseLayout> 

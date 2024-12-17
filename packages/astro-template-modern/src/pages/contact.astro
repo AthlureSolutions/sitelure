@@ -1,106 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
-import Footer from '../components/Footer.astro';
+import ContactForm from '../components/ContactForm.astro';
+import LocationsList from '../components/LocationsList.astro';
 import websiteData from '../data/websiteData.json';
 import type { WebsiteData } from '../types/website';
 
-const data = websiteData as WebsiteData;
-const { contact } = data.site; 
+const data = websiteData as unknown as WebsiteData;
+const { site, pages } = data;
+const { contact } = pages;
 ---
 
-<BaseLayout title={`${contact.title} - ${data.site.name}`} description={contact.subtitle}>
-  <Header config={data.site} />
+<BaseLayout title={`Contact - ${site.name}`} description={contact.hero.subheadline}>
   <main>
     <PageHero
-      title={contact.title} 
-      description={contact.subtitle}
-      backgroundImage={contact.heroImage}
+      title={contact.hero.headline}
+      description={contact.hero.subheadline}
+      backgroundImage={contact.hero.backgroundImage}
     />
-
-    <!-- Contact Info & Form Section -->
-    <section class="section section-dark">
-      <div class="container-custom">
-        <div class="grid md:grid-cols-2 gap-12">
-          <!-- Contact Information -->
-          <div>
-            <h2 class="text-3xl font-heading font-bold text-white mb-8">Visit Us</h2>
-            {contact.locations.map((location) => (
-              <div class="mb-8">
-                <h3 class="text-xl font-bold text-white mb-4">{location.name}</h3>
-                <div class="space-y-4 text-white/80">
-                  <p>
-                    <i class="fas fa-map-marker-alt w-6 text-action"></i>
-                    {location.address}
-                  </p>
-                  <p>
-                    <i class="fas fa-phone w-6 text-action"></i>
-                    <a href={`tel:${location.phone}`} class="hover:text-action transition-colors">
-                      {location.phone}
-                    </a>
-                  </p>
-                  <p>
-                    <i class="fas fa-envelope w-6 text-action"></i>
-                    <a href={`mailto:${location.email}`} class="hover:text-action transition-colors">
-                      {location.email}
-                    </a>
-                  </p>
-                  <p>
-                    <i class="fas fa-clock w-6 text-action"></i>
-                    {location.hours}
-                  </p>
-                </div>
-                
-                <!-- Map -->
-                <div class="mt-8 rounded-lg overflow-hidden">
-                  <iframe
-                    src={location.mapEmbed}
-                    width="100%"
-                    height="300"
-                    style="border:0;"
-                    loading="lazy"
-                    class="grayscale contrast-125"
-                  ></iframe>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <!-- Contact Form -->
-          <div class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10">
-            <h2 class="text-3xl font-heading font-bold text-white mb-8">{contact.form.title}</h2>
-            <form class="space-y-6" name="contact" method="POST" data-netlify="true">
-              {contact.form.fields.map((field) => (
-                <div>
-                  <label for={field.name} class="block text-white mb-2">{field.label}</label>
-                  {field.type === 'textarea' ? (
-                    <textarea
-                      id={field.name}
-                      name={field.name}
-                      required={field.required}
-                      rows="4"
-                      class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-action"
-                    ></textarea>
-                  ) : (
-                    <input
-                      type="text"
-                      id={field.name}
-                      name={field.name}
-                      required={field.required}
-                      class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-action"
-                    />
-                  )}
-                </div>
-              ))}
-              <button type="submit" class="btn w-full">
-                Send Message
-              </button>
-            </form>
-          </div>
+    <section class="section section-dark relative">
+      <div class="container-custom relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12">
+          <LocationsList locations={contact.locations} />
+          <ContactForm form={contact.form} />
         </div>
       </div>
     </section>
   </main>
-  <Footer config={data.site} />
 </BaseLayout> 

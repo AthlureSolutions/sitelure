@@ -1,0 +1,60 @@
+---
+interface Location {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  hours: string;
+  mapEmbed?: string;
+}
+
+interface Props {
+  locations: Location[];
+}
+
+const { locations } = Astro.props;
+---
+
+<div>
+  <h2 class="text-3xl font-heading font-bold text-white mb-8">Visit Us</h2>
+  {locations.map((location) => (
+    <div class="mb-8">
+      <h3 class="text-xl font-bold text-white mb-4">{location.name}</h3>
+      <div class="space-y-4 text-white/80">
+        <p>
+          <i class="fas fa-map-marker-alt w-6 text-action"></i>
+          {location.address}
+        </p>
+        <p>
+          <i class="fas fa-phone w-6 text-action"></i>
+          <a href={`tel:${location.phone}`} class="hover:text-action transition-colors">
+            {location.phone}
+          </a>
+        </p>
+        <p>
+          <i class="fas fa-envelope w-6 text-action"></i>
+          <a href={`mailto:${location.email}`} class="hover:text-action transition-colors">
+            {location.email}
+          </a>
+        </p>
+        <p>
+          <i class="fas fa-clock w-6 text-action"></i>
+          {location.hours}
+        </p>
+      </div>
+      
+      {location.mapEmbed && (
+        <div class="mt-8 rounded-lg overflow-hidden">
+          <iframe
+            src={location.mapEmbed}
+            width="100%"
+            height="300"
+            style="border:0;"
+            loading="lazy"
+            class="grayscale contrast-125"
+          ></iframe>
+        </div>
+      )}
+    </div>
+  ))}
+</div> 

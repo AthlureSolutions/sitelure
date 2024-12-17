@@ -1,64 +1,68 @@
 ---
-import type { SiteConfig } from '../types/website';
+import type { ServicesSection } from '../types/website';
 
 interface Props {
-  config: SiteConfig;
+  services: ServicesSection;
 }
 
-const { config } = Astro.props;
-const { services } = config;
+const { services } = Astro.props;
+
+// Check if services section should be shown
+const showServices = services?.items?.length > 0;
 ---
 
-<section id="services" class="section section-dark relative">
-  <div class="absolute inset-0 bg-fixed" style="background-image: url('https://freesvg.org/img/Placeholder.png'); background-size: cover; background-position: center;">
-    <div class="absolute inset-0 bg-black/85"></div>
-    <div
-      class="absolute inset-0 opacity-10"
-      style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
-        backgroundSize: '5px 5px'
-      }}
-    ></div>
-  </div>
-
-  <div class="container-custom relative z-10">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h2 class="text-4xl font-heading font-bold text-white mb-4">
-        {config.services.title}
-      </h2>
-      <p class="text-lg text-white/80">
-        {config.services.subtitle}
-      </p>
+{showServices && (
+  <section id="services" class="section section-dark relative">
+    <div class="absolute inset-0 bg-fixed" style="background-image: url('https://freesvg.org/img/Placeholder.png'); background-size: cover; background-position: center;">
+      <div class="absolute inset-0 bg-black/85"></div>
+      <div
+        class="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+          backgroundSize: '5px 5px'
+        }}
+      ></div>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {services.services.map((service) => (
-        <a 
-          href={`/services/${service.id}`}
-          class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10 hover:bg-primary/20 transition-all duration-300 group"
-        >
-          <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-action/20">
-            <i class={`fas fa-${service.icon} text-xl text-white group-hover:text-action`}></i>
-          </div>
-          <h3 class="text-xl font-heading font-bold text-white mb-4">
-            {service.title}
-          </h3>
-          <p class="text-white/80 mb-6">
-            {service.shortDescription}
-          </p>
-          <span class="text-action font-medium inline-flex items-center group-hover:translate-x-2 transition-transform">
-            {config.services.learnMoreText || "Learn More"}
-            <i class="fas fa-arrow-right ml-2"></i>
-          </span>
+    <div class="container-custom relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl font-heading font-bold text-white mb-4">
+          {services.title}
+        </h2>
+        <p class="text-lg text-white/80">
+          {services.subtitle}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.items.map((service) => (
+          <a
+            href={`/services/${service.id}`}
+            class="bg-primary/10 backdrop-blur-lg p-8 rounded-lg border border-white/10 hover:bg-primary/20 transition-all duration-300 group"
+          >
+            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-action/20">
+              <i class={`fas fa-${service.icon} text-xl text-white group-hover:text-action`}></i>
+            </div>
+            <h3 class="text-xl font-heading font-bold text-white mb-4">
+              {service.title}
+            </h3>
+            <p class="text-white/80 mb-6">
+              {service.shortDescription}
+            </p>
+            <span class="text-action font-medium inline-flex items-center group-hover:translate-x-2 transition-transform">
+              {services.learnMoreText || "Learn More"}
+              <i class="fas fa-arrow-right ml-2"></i>
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <div class="text-center mt-12">
+        <a href={services.ctaLink || "/contact"} class="btn">
+          {services.ctaText || "Get Started"}
         </a>
-      ))}
+      </div>
     </div>
-
-    <div class="text-center mt-12">
-      <a href={config.services.ctaLink || "/contact"} class="btn">
-        {config.services.ctaText || "Get Started"}
-      </a>
-    </div>
-  </div>
-</section>
+  </section>
+)}

@@ -1,62 +1,66 @@
 ---
-import type { SiteConfig } from '../types/website';
+import type { FeaturesSection } from '../types/website';
 
 interface Props {
-  config: SiteConfig;
+  features: FeaturesSection;
 }
 
-const { config } = Astro.props;
-const { features } = config;
+const { features } = Astro.props;
+
+// Check if features section should be shown
+const showFeatures = features?.items?.length > 0;
 ---
 
-<section id="features" class="section section-dark">
-  <div class="container-custom">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h2 class="text-4xl font-heading font-bold mb-4 text-white">
-        {features.title || "Why Train With Us"}
-      </h2>
-      <p class="text-lg text-gray-200">
-        {features.subtitle || "Experience a fitness journey that transforms both body and mind with our state-of-the-art facilities and expert guidance."}
-      </p>
-    </div>
+{showFeatures && (
+  <section id="features" class="section section-dark">
+    <div class="container-custom">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl font-heading font-bold mb-4 text-white">
+          {features.title}
+        </h2>
+        <p class="text-lg text-gray-200">
+          {features.subtitle}
+        </p>
+      </div>
 
-    <div class="grid md:grid-cols-3 gap-8">
-      {features.items?.map((feature, index) => (
-        <div class={`card relative h-[600px] group overflow-hidden rounded-lg shadow-xl transition-all duration-300 hover:-translate-y-2 ${index === 1 ? 'md:mt-16' : ''}`}>
-          <div class="absolute inset-0">
-            {feature.image ? (
-              <>
-                <img 
-                  src={feature.image} 
-                  alt={feature.title}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div class="absolute inset-0 bg-black/85"></div>
-                <div
-                  class="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
-                    backgroundSize: '5px 5px'
-                  }}
-                ></div>
-              </>
-            ) : (
-              <div class="w-full h-full bg-primary-dark"></div>
-            )}
+      <div class="grid md:grid-cols-3 gap-8">
+        {features.items?.map((feature, index) => (
+          <div class={`card relative h-[600px] group overflow-hidden rounded-lg shadow-xl transition-all duration-300 hover:-translate-y-2 ${index === 1 ? 'md:mt-16' : ''}`}>
+            <div class="absolute inset-0">
+              {feature.image ? (
+                <>
+                  <img 
+                    src={feature.image} 
+                    alt={feature.title}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div class="absolute inset-0 bg-black/85"></div>
+                  <div
+                    class="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px)`,
+                      backgroundSize: '5px 5px'
+                    }}
+                  ></div>
+                </>
+              ) : (
+                <div class="w-full h-full bg-primary-dark"></div>
+              )}
+            </div>
+            
+            <div class="absolute bottom-0 left-0 right-0 w-full p-8 text-center bg-gradient-to-t from-black via-black/80 to-transparent">
+              <h3 class="text-2xl font-heading font-bold mb-4 text-white">{feature.title}</h3>
+              <p class="text-white/80 mb-6">{feature.description}</p>
+              {feature.link && ( 
+                <a href={feature.link} class="btn btn-white-outline inline-block">
+                  {features.learnMoreText || "Learn More"}
+                </a>
+              )}
+            </div>
           </div>
-          
-          <div class="absolute bottom-0 left-0 right-0 w-full p-8 text-center bg-gradient-to-t from-black via-black/80 to-transparent">
-            <h3 class="text-2xl font-heading font-bold mb-4 text-white">{feature.title}</h3>
-            <p class="text-white/80 mb-6">{feature.description}</p>
-            {feature.link && ( 
-              <a href={feature.link} class="btn btn-white-outline inline-block">
-                {features.learnMoreText || "Learn More"}
-              </a>
-            )}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}

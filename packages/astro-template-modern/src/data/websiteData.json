@@ -1,39 +1,40 @@
 {
-  "theme": {
-    "colors": {
-      "primary": {
-        "default": "#1E2B1E",
-        "light": "#2A3B2A",
-        "dark": "#121B12"
-      },
-      "secondary": {
-        "default": "#78AC77",
-        "light": "#8FBE8E",
-        "dark": "#619A60"
-      },
-      "accent": {
-        "default": "#759186",
-        "light": "#FF8787",
-        "dark": "#FA5252"
-      },
-      "action": {
-        "default": "#FFFF47",
-        "light": "#FFFF7A",
-        "dark": "#CCCC14"
-      }
-    },
-    "typography": {
-      "heading": "Poppins",
-      "body": "Montserrat"
-    }
-  },
   "site": {
     "name": "Modern Business",
-    "description": "A professional modern business website template",
-    "defaultImage": "https://freesvg.org/img/Placeholder.png",
+    "description": "Professional modern business website",
     "logo": {
-      "src": "https://freesvg.org/img/Placeholder.png",
+      "src": "/uploads/logo.png",
       "alt": "Modern Business Logo"
+    },
+    "branding": {
+      "theme": {
+        "colors": {
+          "primary": {
+            "default": "#3B82F6",
+            "light": "#60A5FA",
+            "dark": "#2563EB"
+          },
+          "secondary": {
+            "default": "#1E40AF",
+            "light": "#3B82F6",
+            "dark": "#1E3A8A"
+          },
+          "accent": {
+            "default": "#10B981",
+            "light": "#34D399",
+            "dark": "#059669"
+          },
+          "action": {
+            "default": "#3B82F6",
+            "light": "#60A5FA",
+            "dark": "#2563EB"
+          }
+        },
+        "typography": {
+          "heading": "Poppins",
+          "body": "Inter"
+        }
+      }
     },
     "navigation": {
       "links": [
@@ -43,292 +44,279 @@
         { "text": "Contact", "href": "/contact" }
       ]
     },
-    "hero": {
-      "headline": "Lets Get Moving",
-      "subheadline": "Your Fitness Coach",
-      "backgroundImage": "https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg",
-      "cta": {
-        "primary": {
-          "text": "Get Started",
-          "href": "/contact"
-        },
-        "secondary": {
-          "text": "Learn More",
-          "href": "/about"
+    "footer": {
+      "businessInfo": {
+        "name": "Modern Business",
+        "address": "123 Business Street",
+        "phone": "(555) 123-4567",
+        "email": "info@modernbusiness.com"
+      },
+      "socialLinks": [
+        { "platform": "Twitter", "url": "https://twitter.com", "icon": "twitter" },
+        { "platform": "LinkedIn", "url": "https://linkedin.com", "icon": "linkedin" },
+        { "platform": "Instagram", "url": "https://instagram.com", "icon": "instagram" }
+      ],
+      "quickLinks": [
+        { "text": "Privacy Policy", "href": "/privacy" },
+        { "text": "Terms of Service", "href": "/terms" }
+      ]
+    }
+  },
+  "pages": {
+    "home": {
+      "hero": {
+        "headline": "Modern Solutions for Modern Business",
+        "subheadline": "Transform your business with cutting-edge solutions",
+        "backgroundImage": "https://freesvg.org/img/Placeholder.png",
+        "cta": {
+          "primary": {
+            "text": "Get Started",
+            "href": "/contact"
+          },
+          "secondary": {
+            "text": "Learn More",
+            "href": "/about"
+          }
         }
+      },
+      "quote": {
+        "text": "Innovation distinguishes between a leader and a follower.",
+        "author": "Steve Jobs",
+        "role": "Co-founder of Apple Inc."
+      },
+      "features": {
+        "title": "Why Choose Us",
+        "subtitle": "Discover what sets us apart",
+        "learnMoreText": "Learn More",
+        "items": [
+          {
+            "title": "Innovation First",
+            "description": "Stay ahead with cutting-edge solutions",
+            "icon": "star",
+            "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
+            "link": "/services"
+          },
+          {
+            "title": "Expert Team",
+            "description": "Dedicated professionals at your service",
+            "icon": "users",
+            "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c",
+            "link": "/about"
+          },
+          {
+            "title": "Results Driven",
+            "description": "Focused on delivering measurable outcomes",
+            "icon": "chart",
+            "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+            "link": "/services"
+          }
+        ]
+      },
+      "services": {
+        "title": "Our Services",
+        "subtitle": "Comprehensive solutions for your business needs",
+        "learnMoreText": "Learn More",
+        "ctaText": "Get Started",
+        "ctaLink": "/contact",
+        "items": [
+          {
+            "id": "digital-transformation",
+            "title": "Digital Transformation",
+            "shortDescription": "Transform your business with modern technology",
+            "icon": "chart",
+            "heroImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
+            "features": [
+              {
+                "title": "Process Automation",
+                "description": "Streamline your operations",
+                "icon": "star",
+                "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa"
+              },
+              {
+                "title": "Data Analytics",
+                "description": "Make informed decisions",
+                "icon": "chart",
+                "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f"
+              },
+              {
+                "title": "Cloud Solutions",
+                "description": "Scale your business",
+                "icon": "shield",
+                "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c"
+              }
+            ],
+            "quote": {
+              "text": "Digital transformation is not just about technology, it's about people and processes.",
+              "author": "John Smith",
+              "role": "CTO"
+            }
+          }
+        ]
+      },
+      "testimonials": {
+        "title": "What Our Clients Say",
+        "subtitle": "Hear from businesses we've helped transform",
+        "items": [
+          {
+            "quote": "Working with Modern Business transformed our operations.",
+            "author": "Sarah Johnson",
+            "role": "CEO",
+            "company": "Tech Innovators",
+            "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80"
+          }
+        ]
       }
     },
-    "features": {
-      "title": "Why Train With Us",
-      "subtitle": "Experience a fitness journey that transforms both body and mind with our state-of-the-art facilities and expert guidance",
-      "learnMoreText": "Learn More",
-      "items": [
-        {
-          "title": "State-of-the-Art Equipment",
-          "description": "Train with premium fitness equipment and machines designed for optimal results",
-          "icon": "dumbbell",
-          "image": "https://freesvg.org/img/Placeholder.png",
-          "link": "/features/equipment"
-        },
-        {
-          "title": "Expert Trainers",
-          "description": "Work with certified personal trainers who are dedicated to helping you reach your fitness goals",
-          "icon": "user-graduate",
-          "image": "https://freesvg.org/img/Placeholder.png",
-          "link": "/features/trainers"
-        },
-        {
-          "title": "Flexible Programs",
-          "description": "Choose from a variety of training programs and class schedules that fit your lifestyle",
-          "icon": "calendar",
-          "image": "https://freesvg.org/img/Placeholder.png",
-          "link": "/features/programs"
-        }
-      ]
-    },
-    "quote": {
-      "text": "Design is not just what it looks like and feels like. Design is how it works",
-      "author": "Steve Jobs",
-      "role": "Co-founder of Apple Inc."
-    },
-    "services": {
-      "title": "Our Services",
-      "subtitle": "We offer a comprehensive range of services to help you achieve your fitness goals",
-      "learnMoreText": "Learn More",
-      "ctaText": "Get Started",
-      "ctaLink": "/contact",
-      "services": [
-        {
-          "id": "personal-training",
-          "title": "Personal Training",
-          "shortDescription": "One-on-one training sessions customized to your fitness goals and abilities",
-          "icon": "dumbbell", 
-          "heroImage": "https://freesvg.org/img/Placeholder.png",
-          "features": [
-            {
-              "title": "Customized Workouts",
-              "description": "Training programs tailored to your specific goals and fitness level",
-              "icon": "clipboard-list",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Expert Guidance", 
-              "description": "Work directly with certified personal trainers who are passionate about your success",
-              "icon": "user-graduate",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Progress Tracking",
-              "description": "Regular assessments and detailed progress tracking to keep you motivated",
-              "icon": "chart-line",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            }
-          ],
-          "quote": {
-            "text": "The only bad workout is the one that didn't happen",
-            "author": "Anonymous",
-            "role": "Fitness Enthusiast"
-          }
-        },
-        {
-          "id": "group-classes",
-          "title": "Group Classes",
-          "shortDescription": "High-energy group fitness classes led by expert instructors in a motivating environment",
-          "icon": "users",
-          "heroImage": "https://freesvg.org/img/Placeholder.png",
-          "features": [
-            {
-              "title": "Diverse Class Types",
-              "description": "Choose from HIIT, yoga, spinning, and more to keep your workouts exciting",
-              "icon": "list-check",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Flexible Schedule",
-              "description": "Classes offered throughout the day to fit your busy lifestyle",
-              "icon": "calendar",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Community Support",
-              "description": "Work out alongside like-minded individuals in an encouraging atmosphere",
-              "icon": "hands-helping",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            }
-          ],
-          "quote": {
-            "text": "Together we are stronger",
-            "author": "Jane Smith",
-            "role": "Group Fitness Instructor"
-          }
-        },
-        {
-          "id": "nutrition-coaching",
-          "title": "Nutrition Coaching",
-          "shortDescription": "Expert nutrition guidance to complement your fitness routine and maximize results",
-          "icon": "apple-whole",
-          "heroImage": "https://freesvg.org/img/Placeholder.png",
-          "features": [
-            {
-              "title": "Personalized Meal Plans",
-              "description": "Custom nutrition plans that fit your lifestyle and dietary preferences",
-              "icon": "utensils",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Nutritional Education",
-              "description": "Learn the fundamentals of healthy eating and sustainable habits",
-              "icon": "book",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            },
-            {
-              "title": "Regular Check-ins",
-              "description": "Ongoing support and adjustments to ensure you stay on track",
-              "icon": "comments",
-              "image": "https://freesvg.org/img/Placeholder.png"
-            }
-          ],
-          "quote": {
-            "text": "You can't out-train a bad diet",
-            "author": "Mike Johnson",
-            "role": "Nutrition Specialist"
-          }
-        }
-      ]
-    },
     "about": {
-      "title": "Transform Your Life Through Fitness",
-      "subtitle": "Building Stronger Bodies, Building Better Lives",
-      "heroImage": "https://freesvg.org/img/Placeholder.png",
-      "ctaText": "Start Your Journey",
-      "ctaLink": "/contact",
-      "quote": "Strength Builds Character",
+      "hero": {
+        "headline": "Our Story",
+        "subheadline": "Building the future of business",
+        "backgroundImage": "https://images.unsplash.com/photo-1522071820081-009f0129c71c"
+      },
       "mission": {
         "title": "Our Mission",
-        "description": "We're more than just a gym - we're a community dedicated to helping you achieve your fitness goals. Our expert trainers and state-of-the-art facilities provide everything you need to build strength, improve health, and boost confidence."
+        "description": "To empower businesses with innovative solutions that drive growth and success."
       },
       "story": {
         "title": "Our Story",
-        "content": "Founded in 2015, we began with a simple vision: to create a fitness center that puts people first. What started as a small personal training studio has grown into a comprehensive fitness facility that maintains the personal touch we're known for",
-        "image": "https://freesvg.org/img/Placeholder.png",
-        "imageAlt": "Training at our gym"
+        "content": "Founded with a vision to transform how businesses operate in the digital age, we've grown from a small startup to a leading provider of business solutions.",
+        "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c",
+        "imageAlt": "Our Story",
+        "quote": "Innovation is not just about technology, it's about solving real problems."
       },
-      "values": [
-        {
-          "title": "Excellence",
-          "description": "We strive for excellence in everything we do, from our training programs to our facility maintenance",
-          "icon": "star"
-        },
-        {
-          "title": "Community",
-          "description": "We foster a supportive community where everyone feels welcome and motivated",
-          "icon": "users"
-        },
-        {
-          "title": "Innovation",
-          "description": "We continuously evolve our methods and equipment to provide the best fitness experience",
-          "icon": "lightbulb"
-        }
-      ],
-      "stats": [
-        {
-          "value": "15+",
-          "label": "Expert Trainers"
-        },
-        {
-          "value": "1000+",
-          "label": "Members Strong"
-        },
-        {
-          "value": "50+",
-          "label": "Weekly Classes"
-        },
-        {
-          "value": "24/7",
-          "label": "Gym Access"
-        }
-      ]
+      "values": {
+        "title": "Our Values",
+        "subtitle": "What drives us forward",
+        "items": [
+          {
+            "title": "Innovation",
+            "description": "Always pushing boundaries",
+            "icon": "star"
+          },
+          {
+            "title": "Excellence",
+            "description": "Delivering the best",
+            "icon": "shield"
+          },
+          {
+            "title": "Integrity",
+            "description": "Building trust",
+            "icon": "heart"
+          }
+        ]
+      },
+      "stats": {
+        "title": "Our Impact",
+        "subtitle": "Numbers that speak for themselves",
+        "items": [
+          {
+            "value": "500+",
+            "label": "Clients Served"
+          },
+          {
+            "value": "95%",
+            "label": "Client Satisfaction"
+          },
+          {
+            "value": "10+",
+            "label": "Years Experience"
+          }
+        ]
+      }
     },
     "contact": {
-      "title": "Get in Touch",
-      "subtitle": "We're here to help you start your fitness journey",
-      "description": "Have questions about our services or ready to begin your fitness journey? Reach out to us and our team will be happy to assist you",
-      "heroImage": "https://freesvg.org/img/Placeholder.png",
-      "locations": [
-        {
-          "name": "Main Gym",
-          "address": "123 Fitness Street, City, State 12345",
-          "phone": "(555) 123-4567",
-          "email": "info@modernfitness.com",
-          "hours": "Open 24/7",
-          "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.67890!2d-73.123456!3d40.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM40zMDA!5e0!3m2!1sen!2sus!4v1234567890"
-        }
-      ],
+      "hero": {
+        "headline": "Contact Us",
+        "subheadline": "Get in touch with our team",
+        "backgroundImage": "https://images.unsplash.com/photo-1423666639041-f56000c27a9a"
+      },
       "form": {
         "title": "Send us a Message",
-        "submitText": "Send Message",
         "fields": [
           {
             "name": "name",
-            "label": "Full Name",
+            "label": "Your Name",
             "type": "text",
-            "required": true,
-            "placeholder": "Your name"
+            "required": true
           },
           {
             "name": "email",
             "label": "Email Address",
             "type": "email",
-            "required": true,
-            "placeholder": "your.email@example.com"
-          },
-          {
-            "name": "phone",
-            "label": "Phone Number",
-            "type": "tel",
-            "required": false,
-            "placeholder": "(555) 123-4567"
+            "required": true
           },
           {
             "name": "message",
-            "label": "Message",
+            "label": "Your Message",
             "type": "textarea",
-            "required": true,
-            "placeholder": "Tell us about your fitness goals..."
+            "required": true
           }
-        ]
-      }
-    },
-    "footer": {
-      "businessInfo": {
-        "name": "Modern Business Inc.",
-        "address": "123 Business Street, City, State 12345",
-        "phone": "(555) 123-4567",
-        "email": "info@modernbusiness.com"
+        ],
+        "submitText": "Send Message"
       },
-      "socialLinks": [
+      "locations": [
         {
-          "platform": "Twitter",
-          "url": "https://twitter.com/modernbusiness",
-          "icon": "twitter"
+          "name": "San Francisco HQ",
+          "address": "123 Market Street, San Francisco, CA 94105",
+          "phone": "+1 (555) 123-4567",
+          "email": "sf@modernbusiness.com",
+          "hours": "Monday - Friday: 9:00 AM - 5:00 PM",
+          "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0673431806897!2d-122.39904308468216!3d37.79129997975645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085806285ddb1a3%3A0xad9ca7333b4399a7!2s123%20Market%20St%2C%20San%20Francisco%2C%20CA%2094105!5e0!3m2!1sen!2sus!4v1647291234567!5m2!1sen!2sus"
         },
         {
-          "platform": "LinkedIn",
-          "url": "https://linkedin.com/company/modernbusiness",
-          "icon": "linkedin"
-        },
-        {
-          "platform": "Instagram",
-          "url": "https://instagram.com/modernbusiness",
-          "icon": "instagram"
+          "name": "New York Office",
+          "address": "456 Madison Avenue, New York, NY 10022",
+          "phone": "+1 (555) 987-6543",
+          "email": "ny@modernbusiness.com",
+          "hours": "Monday - Friday: 9:00 AM - 6:00 PM",
+          "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.341432745167!2d-73.97585068461581!3d40.75862797932683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f07d5da561%3A0x61f6aa300ba8339d!2s456%20Madison%20Ave%2C%20New%20York%2C%20NY%2010022!5e0!3m2!1sen!2sus!4v1647291234568!5m2!1sen!2sus"
         }
-      ],
-      "quickLinks": [
-        { "text": "Privacy Policy", "href": "/privacy" },
-        { "text": "Terms of Service", "href": "/terms" },
-        { "text": "Careers", "href": "/careers" },
-        { "text": "Blog", "href": "/blog" }
       ]
+    },
+    "servicePages": {
+      "digital-transformation": {
+        "hero": {
+          "headline": "Digital Transformation",
+          "subheadline": "Transform your business with modern technology",
+          "backgroundImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
+          "cta": {
+            "primary": {
+              "text": "Get Started",
+              "href": "/contact"
+            }
+          }
+        },
+        "features": {
+          "title": "Digital Transformation Features",
+          "subtitle": "Everything you need to transform your business",
+          "learnMoreText": "Learn More",
+          "items": [
+            {
+              "title": "Process Automation",
+              "description": "Streamline your operations with intelligent automation",
+              "icon": "star",
+              "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa"
+            },
+            {
+              "title": "Data Analytics",
+              "description": "Make informed decisions with powerful analytics",
+              "icon": "chart",
+              "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f"
+            },
+            {
+              "title": "Cloud Solutions",
+              "description": "Scale your business with modern cloud infrastructure",
+              "icon": "shield",
+              "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c"
+            }
+          ]
+        },
+        "quote": {
+          "text": "Digital transformation is not just about technology, it's about people and processes.",
+          "author": "John Smith",
+          "role": "CTO"
+        }
+      }
     }
   }
 } 
