@@ -15,16 +15,28 @@ const ReviewAndPublish: React.FC<{ prevStep: () => void }> = ({ prevStep }) => {
   const navigate = useNavigate();
 
   const uploadLogo = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('image', file);
+    try {
+      // Convert file to base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
 
-    const response = await api.post('/websites/upload-image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+      const response = await api.post('/websites/upload-image', { 
+        image: base64 
+      });
 
-    return response.data.url;
+      if (!response.data.url) {
+        throw new Error('No URL returned from upload');
+      }
+
+      return response.data.url;
+    } catch (error) {
+      console.error('Logo upload error:', error);
+      throw new Error('Failed to upload logo');
+    }
   };
 
   const handlePublish = async () => {

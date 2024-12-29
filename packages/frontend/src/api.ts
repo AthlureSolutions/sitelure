@@ -2,6 +2,11 @@
 
 import axios from 'axios';
 
+// Create a custom event for token expiration
+export const tokenExpiredEvent = new CustomEvent('tokenExpired', {
+  detail: { message: 'Your session has expired. Please log in again.' }
+});
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:4000',
   headers: {
@@ -34,7 +39,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('token');
-      // Don't redirect here, let the components handle it
+      // Dispatch token expired event
+      window.dispatchEvent(tokenExpiredEvent);
     }
     return Promise.reject(error);
   }

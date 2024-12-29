@@ -1,51 +1,41 @@
 // packages/backend/src/controllers/websiteController.ts
 import { Request, Response } from 'express';
-import { createWebsite, updateWebsiteDeployUrl, getUserWebsites, getWebsiteById, deleteWebsite } from '../models/websiteModel';
-import axios from 'axios';
-import dotenv from 'dotenv';
-import OpenAI from 'openai';
-import { exec } from 'child_process';
+import { PrismaClient } from '@prisma/client';
+import { createWebsite, updateWebsiteDeployUrl } from '../models/websiteModel';
 import path from 'path';
 import fs from 'fs-extra';
+import { v2 as cloudinary } from 'cloudinary';
+import axios from 'axios';
 import AdmZip from 'adm-zip';
+import dotenv from 'dotenv';
+import { exec } from 'child_process';
+import OpenAI from 'openai';
 
 dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const prisma = new PrismaClient();
+
+// Extend Express Request type
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
+
 // Helper function to get workspace root
 const getWorkspaceRoot = () => {
-  return path.join(__dirname, '../../../..');
-};
-
-// Helper function to ensure directory exists
-const ensureDir = async (dirPath: string) => {
-  try {
-    await fs.ensureDir(dirPath);
-  } catch (error) {
-    console.error('Error creating directory:', error);
-    throw error;
-  }
-};
-
-// Helper function to copy file
-const copyFile = async (src: string, dest: string) => {
-  try {
-    await fs.copy(src, dest);
-  } catch (error) {
-    console.error('Error copying file:', error);
-    throw error;
-  }
-};
-
-// Helper function to create URL-friendly slug
-const createSlug = (businessName: string): string => {
-  return businessName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+  return path.join(__dirname, '..', '..', '..', '..');
 };
 
 // Helper function to generate website data using OpenAI
@@ -58,7 +48,7 @@ const generateWebsiteData = async (businessInfo: any, contactInfo: any, colors: 
     "description": "${businessInfo.description || ''}",
     "defaultImage": "https://freesvg.org/img/Placeholder.png",
     "logo": { 
-      "src": "${businessInfo.logoUrl || 'https://freesvg.org/img/Placeholder.png'}",
+      "src": "${businessInfo.logoUrl}",
       "alt": "${businessInfo.name} Logo"
     },
     "branding": {
@@ -323,7 +313,7 @@ CRITICAL REQUIREMENTS:
 // Helper function to adjust color brightness
 const adjustColor = (color: string, amount: number): string => {
   const hex = color.replace('#', '');
-  const r = Math.max(Math.min(parseInt(hex.substring(0, 2), 16) + amount, 0));
+  const r = Math.max(Math.min(parseInt(hex.substring(0, 2), 16) + amount, 255), 0);
   const g = Math.max(Math.min(parseInt(hex.substring(2, 4), 16) + amount, 255), 0);
   const b = Math.max(Math.min(parseInt(hex.substring(4, 6), 16) + amount, 255), 0);
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
@@ -397,63 +387,36 @@ const validateWebsiteData = (data: any): boolean => {
   }
 };
 
-export const uploadImageHandler = async (req: Request, res: Response): Promise<any> => {
+// Add the upload image handler
+export const uploadImageHandler = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+    const { image } = req.body;
+    
+    if (!image) {
+      res.status(400).json({ error: 'No image data provided' });
+      return;
     }
 
-    // Get workspace root for correct path resolution
-    const workspaceRoot = getWorkspaceRoot();
+    // Generate a temporary ID for the upload
+    const tempId = `temp_${Date.now()}`;
     
-    // Copy the uploaded file to Astro template's public directory
-    const publicDir = path.join(workspaceRoot, 'packages', 'astro-template-modern', 'public', 'uploads');
-    console.log('Creating uploads directory at:', publicDir);
-    
-    // Create uploads directory if it doesn't exist
-    try {
-      await fs.ensureDir(publicDir);
-      console.log('Uploads directory created/verified');
-    } catch (dirError: any) {
-      console.error('Error creating uploads directory:', dirError);
-      throw new Error(`Failed to create uploads directory: ${dirError.message}`);
-    }
-
-    const fileName = req.file.filename;
-    const sourcePath = req.file.path;
-    const targetPath = path.join(publicDir, fileName);
-
-    console.log('Copying file:', {
-      sourcePath,
-      targetPath,
-      fileName
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(image, {
+      folder: `sitelure/${tempId}`,
+      resource_type: 'auto',
+      quality: 'auto:best',
+      fetch_format: 'auto',
+      format: 'webp',
+      transformation: [
+        { width: 'auto', crop: 'scale', dpr: 'auto' },
+        { quality: 'auto' }
+      ]
     });
 
-    // Copy file to public directory
-    try {
-      await fs.copy(sourcePath, targetPath);
-      console.log('File copied successfully');
-    } catch (copyError: any) {
-      console.error('Error copying file:', copyError);
-      throw new Error(`Failed to copy uploaded file: ${copyError.message}`);
-    }
-
-    // Return the public URL for the image
-    const imageUrl = `/uploads/${fileName}`;
-    console.log('Image uploaded successfully:', imageUrl);
-    
-    res.json({ imageUrl });
-  } catch (error: any) {
-    console.error('Image upload error:', {
-      message: error.message,
-      stack: error.stack
-    });
-    
-    res.status(500).json({ 
-      message: 'Failed to upload image',
-      error: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+    res.json({ url: result.secure_url });
+  } catch (error) {
+    console.error('Image upload error:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
   }
 };
 
@@ -504,236 +467,289 @@ const installDependenciesWithCache = async (generatedPath: string) => {
   }
 };
 
-export const createWebsiteHandler = async (req: Request, res: Response): Promise<any> => {
-  const userId = (req as any).user;
-  
+// Add new helper for template setup
+const setupSiteFromTemplate = async (templatePath: string, targetPath: string) => {
   try {
-    // Validate request body
-    if (!req.body) {
-      throw new Error('Request body is empty');
+    // Create target directory if it doesn't exist
+    await fs.promises.mkdir(targetPath, { recursive: true });
+
+    // Define patterns for files/directories to exclude
+    const excludePatterns = [
+      'node_modules',
+      'dist',
+      '.git',
+      '.astro',
+      '.env',
+      '.env.*',
+      '*.log',
+      'coverage',
+      'test',
+      'tests',
+      '*.test.*',
+      '*.spec.*'
+    ];
+
+    // Copy all files from template to target
+    await copyFiles(templatePath, targetPath, excludePatterns);
+
+    // Create uploads directory
+    await fs.promises.mkdir(path.join(targetPath, 'public', 'uploads'), { recursive: true });
+
+    console.log('Template setup completed successfully');
+  } catch (error) {
+    console.error('Error setting up site from template:', error);
+    throw new Error('Failed to setup site from template');
+  }
+};
+
+const copyFiles = async (src: string, dest: string, excludePatterns: string[]) => {
+  const entries = await fs.promises.readdir(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    // Skip excluded patterns
+    if (excludePatterns.some(pattern => {
+      if (pattern.includes('*')) {
+        const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+        return regex.test(entry.name);
+      }
+      return entry.name === pattern;
+    })) {
+      continue;
     }
 
-    console.log('Received request body:', JSON.stringify(req.body, null, 2));
-    
-    const { businessInfo, contactInfo, logoUrl, colors, socialMediaLinks, seoSettings, template } = req.body;
-
-    // Validate required fields
-    if (!businessInfo?.name) {
-      throw new Error('Business name is required');
+    if (entry.isDirectory()) {
+      await fs.promises.mkdir(destPath, { recursive: true });
+      await copyFiles(srcPath, destPath, excludePatterns);
+    } else {
+      await fs.promises.copyFile(srcPath, destPath);
     }
+  }
+};
 
-    if (!contactInfo?.email) {
-      throw new Error('Contact email is required');
-    }
+// Write website content helper
+const writeWebsiteContent = async (targetPath: string, content: any) => {
+  const dataPath = path.join(targetPath, 'src', 'data', 'websiteData.json');
+  await fs.writeJSON(dataPath, content, { spaces: 2 });
+};
 
-    // Create website record first to get ID
-    const website = await createWebsite({
-      ownerId: userId,
-      businessName: businessInfo.name,
-      businessEmail: businessInfo.email,
-      businessDescription: businessInfo.description || '',
-      contactEmail: contactInfo.email,
-      phoneNumber: contactInfo.phoneNumber || '',
-      address: contactInfo.address || '',
-      logoUrl: logoUrl || '',
-      primaryColor: colors?.primary || '#3B82F6',
-      secondaryColor: colors?.secondary || '#1E40AF',
-      template: template || 'default',
-      facebookUrl: socialMediaLinks?.facebook || '',
-      twitterUrl: socialMediaLinks?.twitter || '',
-      instagramUrl: socialMediaLinks?.instagram || '',
-      linkedinUrl: socialMediaLinks?.linkedin || '',
-      metaTitle: seoSettings?.metaTitle || businessInfo.name,
-      metaDescription: seoSettings?.metaDescription || businessInfo.description || '',
-      metaKeywords: seoSettings?.metaKeywords || '',
-      content: req.body.content || '',
+// Build site helper
+const buildSite = async (targetPath: string) => {
+  return new Promise<void>((resolve, reject) => {
+    exec('npm run build', { cwd: targetPath }, (error, stdout, stderr) => {
+      if (error) {
+        console.error('Error building site:', { error, stderr });
+        return reject(new Error(`Failed to build site: ${stderr}`));
+      }
+      console.log('Build completed:', stdout);
+      resolve();
     });
+  });
+};
 
-    console.log('Website created in database:', website);
+// Deploy to Netlify helper
+const deployToNetlify = async (targetPath: string, websiteId: string) => {
+  if (!process.env.NETLIFY_API_TOKEN) {
+    throw new Error('NETLIFY_API_TOKEN is not configured');
+  }
 
-    // Generate website content in parallel with file operations
-    const contentPromise = generateWebsiteData(
+  // Create site on Netlify
+  const netlifyResponse = await axios.post('https://api.netlify.com/api/v1/sites', {
+    name: `sitelure-${websiteId}`,
+  }, {
+    headers: {
+      Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const siteId = netlifyResponse.data.id;
+  console.log('Netlify site created:', siteId);
+
+  // Create zip in memory
+  const zip = new AdmZip();
+  const distPath = path.join(targetPath, 'dist');
+  zip.addLocalFolder(distPath);
+  const zipBuffer = zip.toBuffer();
+
+  // Deploy using buffer
+  const deployResponse = await axios.post(
+    `https://api.netlify.com/api/v1/sites/${siteId}/deploys`,
+    zipBuffer,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
+        'Content-Type': 'application/zip',
+      },
+    }
+  );
+
+  // Get the production URL instead of the deploy URL
+  const siteUrl = netlifyResponse.data.ssl_url || netlifyResponse.data.url;
+  return siteUrl;
+};
+
+export const createWebsiteHandler = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const websiteData = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Ensure required objects exist with defaults
+    const businessInfo = {
+      ...websiteData.businessInfo,
+      logoUrl: websiteData.logoUrl // Make sure logo URL is available in businessInfo
+    };
+    const contactInfo = websiteData.contactInfo || {};
+    const designSettings = websiteData.designSettings || { colors: {}, template: 'modern' };
+    const socialMediaLinks = websiteData.socialMediaLinks || {};
+    const seoSettings = websiteData.seoSettings || {};
+
+    // Generate a unique website ID
+    const websiteId = `site-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+
+    // Get paths
+    const workspaceRoot = path.resolve(__dirname, '../../../..');
+    const templatePath = path.join(workspaceRoot, 'packages', 'astro-template-modern');
+    const targetPath = path.join(workspaceRoot, 'websites', websiteId);
+
+    console.log('Template path:', templatePath);
+    console.log('Target path:', targetPath);
+
+    // Setup site from template
+    await setupSiteFromTemplate(templatePath, targetPath);
+
+    // Generate website content using OpenAI
+    const content = await generateWebsiteData(
       businessInfo,
       contactInfo,
-      colors,
+      designSettings.colors,
       socialMediaLinks,
       seoSettings
     );
 
-    // Setup file structure
-    const workspaceRoot = getWorkspaceRoot();
-    const astroTemplatePath = path.join(workspaceRoot, 'packages', 'astro-template-modern');
-    const generatedSitesPath = path.join(workspaceRoot, 'packages', 'backend', 'generated-sites');
-    const generatedPath = path.join(generatedSitesPath, website.id);
+    // Write website data to JSON file
+    const dataPath = path.join(targetPath, 'src', 'data');
+    await fs.promises.mkdir(dataPath, { recursive: true });
+    await fs.promises.writeFile(
+      path.join(dataPath, 'websiteData.json'),
+      JSON.stringify(content, null, 2)
+    );
 
-    // Prepare directories in parallel
-    await Promise.all([
-      fs.ensureDir(generatedSitesPath),
-      fs.ensureDir(generatedPath)
-    ]);
-
-    // Copy template
-    await fs.copy(astroTemplatePath, generatedPath);
-    console.log('Astro template copied to:', generatedPath);
-
-    // Handle logo if exists
-    if (logoUrl && logoUrl.startsWith('/uploads/')) {
-      const srcPath = path.join(astroTemplatePath, 'public', logoUrl);
-      const destPath = path.join(generatedPath, 'public', logoUrl);
-      await fs.copy(srcPath, destPath);
-    }
-
-    // Wait for content generation
-    const websiteData = await contentPromise;
-    
-    // Write website data
-    const dataPath = path.join(generatedPath, 'src', 'data', 'websiteData.json');
-    await fs.writeJSON(dataPath, websiteData, { spaces: 2 });
-
-    // Install dependencies using cache
-    await installDependenciesWithCache(generatedPath);
-
-    // Build site
-    console.log('Building Astro site...');
-    await new Promise<void>((resolve, reject) => {
-      exec('npm run build', { cwd: generatedPath }, (error, stdout, stderr) => {
-        if (error) {
-          console.error('Error building site:', { error, stderr });
-          return reject(new Error(`Failed to build site: ${stderr}`));
-        }
-        console.log('Build completed:', stdout);
-        resolve();
-      });
+    // Create website record in database
+    const website = await createWebsite({
+      ownerId: userId,
+      businessName: businessInfo.name || '',
+      businessEmail: businessInfo.email || '',
+      businessDescription: businessInfo.description || '',
+      contactEmail: contactInfo.email || '',
+      phoneNumber: contactInfo.phoneNumber || '',
+      address: contactInfo.address || '',
+      logoUrl: businessInfo.logoUrl || '',
+      primaryColor: designSettings.colors?.primary || '#3B82F6',
+      secondaryColor: designSettings.colors?.secondary || '#1E40AF',
+      template: designSettings.template || 'modern',
+      facebookUrl: socialMediaLinks.facebook || '',
+      twitterUrl: socialMediaLinks.twitter || '',
+      instagramUrl: socialMediaLinks.instagram || '',
+      linkedinUrl: socialMediaLinks.linkedin || '',
+      metaTitle: seoSettings.metaTitle || businessInfo.name || '',
+      metaDescription: seoSettings.metaDescription || businessInfo.description || '',
+      metaKeywords: seoSettings.metaKeywords || '',
+      content: JSON.stringify(content)
     });
+
+    // Install dependencies
+    await installDependenciesWithCache(targetPath);
+
+    // Build the site
+    await buildSite(targetPath);
 
     // Deploy to Netlify
-    try {
-      if (!process.env.NETLIFY_API_TOKEN) {
-        throw new Error('NETLIFY_API_TOKEN is not configured');
-      }
+    const deploymentUrl = await deployToNetlify(targetPath, websiteId);
 
-      const sanitizedBusinessName = businessInfo.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
+    // Update website with deployment URL
+    await updateWebsiteDeployUrl(website.id, deploymentUrl);
 
-      const netlifyResponse = await axios.post('https://api.netlify.com/api/v1/sites', {
-        name: `${sanitizedBusinessName}-sitelure-${website.id.slice(0, 8)}`,
-      }, {
-        headers: {
-          Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const siteId = netlifyResponse.data.id;
-      console.log('Netlify site created:', siteId);
-
-      // Create zip in memory instead of writing to disk
-      const zip = new AdmZip();
-      const distPath = path.join(generatedPath, 'dist');
-      zip.addLocalFolder(distPath);
-      const zipBuffer = zip.toBuffer();
-
-      // Deploy using buffer
-      const deployResponse = await axios.post(
-        `https://api.netlify.com/api/v1/sites/${siteId}/deploys`,
-        zipBuffer,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.NETLIFY_API_TOKEN}`,
-            'Content-Type': 'application/zip',
-          },
-        }
-      );
-
-      const deployUrl = deployResponse.data.deploy_url;
-      console.log('Site deployed at:', deployUrl);
-
-      // Update website record with deploy URL
-      await updateWebsiteDeployUrl(website.id, deployUrl);
-
-      return res.status(201).json({ 
-        websiteId: website.id, 
-        deployUrl: deployUrl 
-      });
-    } catch (deployError: any) {
-      throw new Error(`Deployment failed: ${deployError.message}`);
-    }
-  } catch (error: any) {
-    console.error('Website Creation Error:', {
-      message: error.message,
-      stack: error.stack,
-      response: error.response?.data
+    res.status(200).json({
+      message: 'Website created successfully',
+      websiteId: website.id,
+      deploymentUrl
     });
-
-    res.status(500).json({ 
-      message: 'Failed to create website.',
-      error: error.message,
-      details: process.env.NODE_ENV === 'development' ? {
-        stack: error.stack,
-        response: error.response?.data
-      } : undefined
-    });
+  } catch (error) {
+    console.error('Error creating website:', error);
+    res.status(500).json({ error: 'Failed to create website' });
   }
 };
 
-export const getUserWebsitesHandler = async (req: Request, res: Response): Promise<any> => {
+// Add other handlers that the routes are expecting
+export const getUserWebsitesHandler = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user;
-    const websites = await getUserWebsites(userId);
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const websites = await prisma.website.findMany({
+      where: { ownerId: userId },
+      orderBy: { createdAt: 'desc' }
+    });
     res.status(200).json(websites);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching user websites:', error);
-    res.status(500).json({ 
-      message: 'Failed to fetch websites',
-      error: error.message 
-    });
+    res.status(500).json({ error: 'Failed to fetch websites' });
   }
 };
 
-export const getWebsiteDetailsHandler = async (req: Request, res: Response): Promise<any> => {
+export const getWebsiteDetailsHandler = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user;
+    const userId = req.user?.id;
     const websiteId = req.params.id;
-    
-    const website = await getWebsiteById(websiteId, userId);
-    
-    if (!website) {
-      return res.status(404).json({ message: 'Website not found' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
-
-    res.status(200).json(website);
-  } catch (error: any) {
-    console.error('Error fetching website details:', error);
-    res.status(500).json({ 
-      message: 'Failed to fetch website details',
-      error: error.message 
+    const website = await prisma.website.findFirst({
+      where: { id: websiteId, ownerId: userId }
     });
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+    res.status(200).json(website);
+  } catch (error) {
+    console.error('Error fetching website details:', error);
+    res.status(500).json({ error: 'Failed to fetch website details' });
   }
 };
 
-export const deleteWebsiteHandler = async (req: Request, res: Response): Promise<any> => {
+export const deleteWebsiteHandler = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user;
+    const userId = req.user?.id;
     const websiteId = req.params.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     // Check if website exists and belongs to user
-    const website = await getWebsiteById(websiteId, userId);
+    const website = await prisma.website.findFirst({
+      where: { id: websiteId, ownerId: userId }
+    });
+
     if (!website) {
-      return res.status(404).json({ message: 'Website not found' });
+      return res.status(404).json({ error: 'Website not found' });
     }
 
     // Delete from Netlify if deployUrl exists
     if (website.deployUrl) {
       try {
-        // Extract deploy ID from the URL
-        // Example URL: http://674df83c7778d40096d13de5--test-gym-yeah-sitelure-407723bb
-        const deployUrl = website.deployUrl;
-        const deployId = deployUrl.split('//')[1].split('--')[0];
+        // Extract site name from the URL
+        const siteUrl = new URL(website.deployUrl);
+        const siteName = siteUrl.hostname.split('.')[0];
         
-        console.log('Fetching Netlify site details for deploy ID:', deployId);
+        console.log('Fetching Netlify site details for site name:', siteName);
         
         // First, get all sites
         const sitesResponse = await axios.get('https://api.netlify.com/api/v1/sites', {
@@ -742,12 +758,8 @@ export const deleteWebsiteHandler = async (req: Request, res: Response): Promise
           }
         });
 
-        // Find the site with matching deploy ID
-        const site = sitesResponse.data.find((s: any) => 
-          s.deploy_id === deployId || 
-          s.id === deployId || 
-          s.site_id === deployId
-        );
+        // Find the site with matching name
+        const site = sitesResponse.data.find((s: any) => s.name === siteName);
 
         if (site) {
           console.log('Found Netlify site:', site.name, 'with ID:', site.id);
@@ -758,7 +770,7 @@ export const deleteWebsiteHandler = async (req: Request, res: Response): Promise
           });
           console.log('Successfully deleted Netlify site');
         } else {
-          console.log('No matching Netlify site found for deploy ID:', deployId);
+          console.log('No matching Netlify site found for name:', siteName);
         }
       } catch (error: any) {
         console.error('Error deleting Netlify site:', error.response?.data || error.message);
@@ -767,22 +779,21 @@ export const deleteWebsiteHandler = async (req: Request, res: Response): Promise
     }
 
     // Delete from database
-    await deleteWebsite(websiteId, userId);
+    await prisma.website.delete({
+      where: { id: websiteId }
+    });
 
     // Delete generated files if they exist
-    const workspaceRoot = getWorkspaceRoot();
-    const generatedPath = path.join(workspaceRoot, 'packages', 'backend', 'generated-sites', websiteId);
+    const workspaceRoot = path.resolve(__dirname, '../../../..');
+    const generatedPath = path.join(workspaceRoot, 'websites', websiteId);
     if (fs.existsSync(generatedPath)) {
       await fs.remove(generatedPath);
       console.log('Deleted generated files at:', generatedPath);
     }
 
     res.status(200).json({ message: 'Website deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting website:', error);
-    res.status(500).json({ 
-      message: 'Failed to delete website',
-      error: error.message 
-    });
+    res.status(500).json({ error: 'Failed to delete website' });
   }
 };

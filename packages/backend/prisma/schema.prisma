@@ -29,7 +29,7 @@ model Website {
 
   // Contact Information
   contactEmail    String
-  phoneNumber     String
+  phoneNumber     String?
   address         String
 
   // Design

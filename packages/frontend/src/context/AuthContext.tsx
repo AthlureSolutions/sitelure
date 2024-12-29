@@ -1,6 +1,8 @@
 // packages/frontend/src/context/AuthContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import api from '../api';
+import { useNavigate } from 'react-router-dom';
+import api, { tokenExpiredEvent } from '../api';
+import { useNotification } from './NotificationContext';
 
 interface AuthContextType {
   user: string | null;
@@ -18,13 +20,29 @@ export const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setUser(token);
     }
-  }, []);
+
+    // Listen for token expired event
+    const handleTokenExpired = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      logout();
+      showNotification(customEvent.detail.message, 'error');
+      navigate('/');
+    };
+
+    window.addEventListener('tokenExpired', handleTokenExpired);
+
+    return () => {
+      window.removeEventListener('tokenExpired', handleTokenExpired);
+    };
+  }, [navigate, showNotification]);
 
   const login = async (email: string, password: string) => {
     try {

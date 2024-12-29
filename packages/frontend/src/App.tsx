@@ -7,6 +7,7 @@ import RedirectIfAuthenticated from './components/RedirectIfAuthenticated';
 import AuthenticatedLayout from './components/AuthenticatedLayout';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'));
@@ -96,7 +97,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <AppContent />
+        <NotificationProvider>
+          <AppContent />
+        </NotificationProvider>
       </ThemeProvider>
     </AuthProvider>
   );
